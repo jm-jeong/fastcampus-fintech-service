@@ -1,1 +1,1 @@
-# fastcampus-fintech-service
+fintech-service
