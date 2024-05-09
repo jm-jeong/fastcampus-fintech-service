@@ -20,3 +20,5 @@ tasks.register("prepareKotlinBuildScriptModel"){}
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+jar.enabled = false
