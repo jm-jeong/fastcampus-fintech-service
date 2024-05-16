@@ -2,3 +2,4 @@ rootProject.name = 'fintech-service'
 
 include 'api-server'
 include 'common'
+include 'db'
