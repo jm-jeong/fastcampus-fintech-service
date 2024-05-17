@@ -12,7 +12,7 @@ env:
   S3_BUCKET_NAME: s3-fastcampus-fintech
   CODE_DEPLOY_APPLICATION_NAME: FINTECH-CODE-DEPLOY
   CODE_DEPLOY_DEPLOYMENT_GROUP_NAME: CODE-DEPLOY-GROUP
-  RESOURCE_PATH: ./fintech-service/api-server/src/main/resources/application.yaml
+  RESOURCE_PATH: ./api-server/src/main/resources/application.yaml
 
 jobs:
   build:
