@@ -1,9 +1,7 @@
 spring:
-  config.activate.on-profile: testdb
+  config.activate.on-profile: dev
   datasource:
     url: jdbc:mysql://localhost:3306/fintech_db?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul&allowPublicKeyRetrieval=true
-
-
     username: tester
     password: Imtestpassword!@#
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -18,27 +16,25 @@ spring:
         dialect: org.hibernate.dialect.MySQLDialect
 #  sql.init.mode: always
 
-
 jwt:
   secret-key: fast-campus.com.fintech_2024_secret_key
   # 30 days
   token.expired-time-ms: 86400000
 ---
 spring:
-  config.activate.on-profile: dev
+  config.activate.on-profile: production
   datasource:
-    url: jdbc:mysql://localhost:3306/fintech
-    username: winter
-    password: Imtestpassword!@#
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-    defer-datasource-initialization: true
-    hibernate.ddl-auto: create
-    show-sql: true
+    hibernate.ddl-auto: update
     properties:
-      hibernate.format_sql: true
       hibernate.default_batch_fetch_size: 100
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
-#  sql.init.mode: always
-
+jwt:
+  secret-key: ${JWT_SECRET_KEY}
+  # 30 days
+  token.expired-time-ms: 86400000
