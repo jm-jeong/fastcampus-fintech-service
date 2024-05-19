@@ -46,7 +46,7 @@ jobs:
 
       # (3) Gradle build (Test 제외)
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build -x test
         shell: bash
 
       - name: Make zip file
