@@ -38,8 +38,8 @@ public class UserService {
 	@Transactional
 	public UserResponse join(UserRegisterRequest request) {
 
-		userRepository.findByName(request.name()).ifPresent(it -> {
-			throw new ApiException(UserErrorCode.DUPLICATED_USER_NAME, String.format("name is %s", request.name()));
+		userRepository.findByEmail(request.email()).ifPresent(it -> {
+			throw new ApiException(UserErrorCode.DUPLICATED_USER_EMAIL, String.format("email is %s", request.email()));
 		});
 
 		UserAccount entity = UserAccount.builder()
