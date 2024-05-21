@@ -1,7 +1,6 @@
 #!/bin/bash
 PROJECT_NAME="fintech-service"
-API_SERVER="api-server"
-JAR_PATH="/home/ubuntu/$PROJECT_NAME/$API_SERVER/build/libs/*.jar"
+JAR_PATH="/home/ubuntu/$PROJECT_NAME/build/libs/*.jar"
 DEPLOY_PATH=/home/ubuntu/$PROJECT_NAME/
 DEPLOY_LOG_PATH="/home/ubuntu/$PROJECT_NAME/deploy.log"
 DEPLOY_ERR_LOG_PATH="/home/ubuntu/$PROJECT_NAME/deploy_err.log"
