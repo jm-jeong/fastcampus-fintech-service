@@ -43,19 +43,24 @@ public class UserAccount extends AuditingFields {
 	@Column(nullable = false, length = 320, unique = true)
 	private String email;
 
-	@Column(nullable = false, length = 100)
+	@Column(length = 100)
 	private String password;
 
 	@Enumerated(EnumType.STRING)
 	private UserRole userRole;
 
+	@Column
+	private String kakaoId;
+
 	@Builder
-	public UserAccount(Long id, String name, String email, String password, UserRole userRole) {
+	public UserAccount(Long id, String name, String email,
+					   String password, UserRole userRole, String kakaoId) {
 		this.id = id;
 		this.name = name;
 		this.email = email;
 		this.password = password;
 		this.userRole = userRole;
+		this.kakaoId =	kakaoId;
 	}
 
 	@Override
