@@ -1,6 +1,6 @@
 package com.fastcampus.fintechservice.db.lounge.enums;
 
-public enum FinancialProductType {
+public enum FinancialType {
     SAVINGS_ACCOUNT("저축예금"),
     FIXED_DEPOSIT("정기예금"),
     INSURANCE("보험"),
@@ -10,7 +10,7 @@ public enum FinancialProductType {
 
     private final String description;
 
-    FinancialProductType(String description) {
+    FinancialType(String description) {
         this.description = description;
     }
 

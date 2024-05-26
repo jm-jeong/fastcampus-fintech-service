@@ -29,7 +29,7 @@ public class LoungeService {
         return Lounge.builder()
                 .title(loungeRequestDto.getTitle())
                 .content(loungeRequestDto.getContent())
-                .financialProductType(loungeRequestDto.getFinancialProductType())
+                .financialType(loungeRequestDto.getFinancialType())
                 .build();
     }
 
@@ -63,9 +63,11 @@ public class LoungeService {
 
 
     // 라운지 글 유효성체크
-    private Lounge validatePost(String postId) {
+    public Lounge validatePost(String postId) {
         return loungeRepository.findByPostId(postId)
                 .orElseThrow(() -> new ApiException(ErrorCode.BAD_REQUEST, "Post not found"));
     }
+
+
 
 }

@@ -1,7 +1,7 @@
 package com.fastcampus.fintechservice.db.lounge;
 
 
-import com.fastcampus.fintechservice.db.lounge.enums.FinancialProductType;
+import com.fastcampus.fintechservice.db.lounge.enums.FinancialType;
 import com.fastcampus.fintechservice.db.user.UserAccount;
 import com.fastcampus.fintechservice.dto.request.LoungeRequestDto;
 import jakarta.persistence.*;
@@ -33,7 +33,7 @@ public class Lounge {
     private String content;
 
     @Enumerated(EnumType.STRING)
-    private FinancialProductType financialProductType;
+    private FinancialType financialType;
 
     @CreatedDate
     private String createdAt;
