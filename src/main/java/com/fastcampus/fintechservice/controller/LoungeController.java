@@ -1,11 +1,10 @@
 package com.fastcampus.fintechservice.controller;
 
-import com.fastcampus.fintechservice.config.utils.UserDetailsImpl;
+
 import com.fastcampus.fintechservice.dto.request.LoungeRequestDto;
 import com.fastcampus.fintechservice.dto.response.LoungeResponseDto;
 import com.fastcampus.fintechservice.service.LoungeService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
