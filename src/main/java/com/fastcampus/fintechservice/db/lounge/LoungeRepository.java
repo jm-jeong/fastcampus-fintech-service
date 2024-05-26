@@ -6,6 +6,6 @@ import java.util.Optional;
 
 public interface LoungeRepository extends JpaRepository<Lounge, Long> {
 
-    Optional<Lounge> findByPostId(String postId);
+    Optional<Lounge> findById(Long postId);
 
 }

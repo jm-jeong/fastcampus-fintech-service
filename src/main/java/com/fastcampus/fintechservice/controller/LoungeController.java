@@ -1,9 +1,11 @@
 package com.fastcampus.fintechservice.controller;
 
+import com.fastcampus.fintechservice.config.utils.UserDetailsImpl;
 import com.fastcampus.fintechservice.dto.request.LoungeRequestDto;
 import com.fastcampus.fintechservice.dto.response.LoungeResponseDto;
 import com.fastcampus.fintechservice.service.LoungeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,7 +23,7 @@ public class LoungeController {
 
 
     @GetMapping("/{postId}")
-    public LoungeResponseDto getPost(@PathVariable String postId) {
+    public LoungeResponseDto getPost(@PathVariable Long postId) {
         return loungeService.getPost(postId);
     }
 
@@ -31,12 +33,12 @@ public class LoungeController {
 //    }
 
     @PutMapping("/{postId}")
-    public LoungeResponseDto updatePost(@PathVariable String postId, @RequestBody LoungeRequestDto loungeRequestDto) {
+    public LoungeResponseDto updatePost(@PathVariable Long postId, @RequestBody LoungeRequestDto loungeRequestDto) {
         return loungeService.updatePost(postId, loungeRequestDto);
     }
 
     @DeleteMapping("/{postId}")
-    public String deletePost(@PathVariable String postId) {
+    public String deletePost(@PathVariable Long postId) {
         return loungeService.deletePost(postId);
     }
 

@@ -36,7 +36,7 @@ public class LoungeService {
     // 라운지 글 가져오기
 
     @Transactional
-    public LoungeResponseDto getPost(String postId) {
+    public LoungeResponseDto getPost(Long postId) {
 
         return LoungeResponseDto.from(validatePost(postId));
     }
@@ -45,7 +45,7 @@ public class LoungeService {
 
     // 라운지 글 업데이트
     @Transactional
-    public LoungeResponseDto updatePost (String postId, LoungeRequestDto loungeRequestDto) {
+    public LoungeResponseDto updatePost (Long postId, LoungeRequestDto loungeRequestDto) {
         Lounge lounge = validatePost(postId);
         lounge.loungeUpdate(loungeRequestDto);
         return LoungeResponseDto.from(lounge);
@@ -55,7 +55,7 @@ public class LoungeService {
     // 라운지 글
 
     @Transactional
-    public String deletePost(String postId) {
+    public String deletePost(Long postId) {
         Lounge lounge = validatePost(postId);
         loungeRepository.delete(lounge);
         return "삭제완료";
@@ -63,8 +63,8 @@ public class LoungeService {
 
 
     // 라운지 글 유효성체크
-    public Lounge validatePost(String postId) {
-        return loungeRepository.findByPostId(postId)
+    public Lounge validatePost(Long postId) {
+        return loungeRepository.findById(postId)
                 .orElseThrow(() -> new ApiException(ErrorCode.BAD_REQUEST, "Post not found"));
     }
 
