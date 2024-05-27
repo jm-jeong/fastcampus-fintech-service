@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotNull;
 public record UserRegisterRequest(
 	@NotNull @NotBlank String name,
 	@NotNull @NotBlank @Email String email,
-	@NotNull @NotBlank @Length(min = 8, max = 30) String password
+	@Length(min = 8, max = 30) String password
 ) {
 
 	public static UserRegisterRequest of(String name, String email, String password) {
