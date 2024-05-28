@@ -1,11 +1,11 @@
 package com.fastcampus.fintechservice.controller;
 
+import com.fastcampus.fintechservice.config.security.UserDetailsImpl;
+import com.fastcampus.fintechservice.dto.UserInfoRequestDto;
+import com.fastcampus.fintechservice.dto.response.UserInfoResponseDto;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 import com.fastcampus.fintechservice.common.api.Api;
 import com.fastcampus.fintechservice.dto.request.UserLoginRequest;
@@ -46,6 +46,12 @@ public class UserApiController {
 	@GetMapping("/me")
 	public Api<UserResponse> me(Authentication authentication) {
 		return Api.OK(UserResponse.from(userService.loadUserByEmail(authentication.getName())));
+	}
+
+	@PatchMapping("/info")
+	public Api<UserInfoResponseDto> updateDetailInfo(@AuthenticationPrincipal UserDetailsImpl userDetails,
+													 @RequestBody UserInfoRequestDto request) {
+		return Api.OK(userService.updateDetailInfo(userDetails.getUser(), request));
 	}
 
 }

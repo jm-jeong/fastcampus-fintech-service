@@ -5,15 +5,7 @@ import java.util.Objects;
 import com.fastcampus.fintechservice.db.AuditingFields;
 import com.fastcampus.fintechservice.db.user.enums.UserRole;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Index;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -52,15 +44,19 @@ public class UserAccount extends AuditingFields {
 	@Column
 	private String kakaoId;
 
+	@Embedded
+	private UserInfo userInfo;
+
 	@Builder
 	public UserAccount(Long id, String name, String email,
-					   String password, UserRole userRole, String kakaoId) {
+					   String password, UserRole userRole, String kakaoId, UserInfo userInfo) {
 		this.id = id;
 		this.name = name;
 		this.email = email;
 		this.password = password;
 		this.userRole = userRole;
 		this.kakaoId =	kakaoId;
+		this.userInfo = userInfo;
 	}
 
 	@Override
