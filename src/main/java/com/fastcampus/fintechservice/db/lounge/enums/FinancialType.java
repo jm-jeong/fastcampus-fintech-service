@@ -1,12 +1,11 @@
 package com.fastcampus.fintechservice.db.lounge.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum FinancialType {
-    SAVINGS_ACCOUNT("저축예금"),
     FIXED_DEPOSIT("정기예금"),
-    INSURANCE("보험"),
-    LOAN("대출"),
-    CREDIT_CARD("신용카드"),
-    MORTGAGE("주택담보대출");
+    SAVINGS_ACCOUNT("적금");
 
     private final String description;
 
@@ -14,7 +13,4 @@ public enum FinancialType {
         this.description = description;
     }
 
-    public String getDescription() {
-        return description;
-    }
 }

@@ -4,8 +4,11 @@ import com.fastcampus.fintechservice.common.error.ErrorCode;
 import com.fastcampus.fintechservice.common.exception.ApiException;
 import com.fastcampus.fintechservice.db.lounge.Lounge;
 import com.fastcampus.fintechservice.db.lounge.LoungeRepository;
+import com.fastcampus.fintechservice.db.user.UserAccount;
+import com.fastcampus.fintechservice.db.user.UserRepository;
+import com.fastcampus.fintechservice.dto.UserDto;
 import com.fastcampus.fintechservice.dto.request.LoungeRequestDto;
-import com.fastcampus.fintechservice.dto.response.LoungeResponseDto;
+import com.fastcampus.fintechservice.dto.response.LoungeResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,14 +22,17 @@ public class LoungeService {
 
     // 라운지 글 생성
     @Transactional
-    public LoungeResponseDto registerPost(LoungeRequestDto loungeRequestDto) {
+    public LoungeResponse registerPost(LoungeRequestDto loungeRequestDto, UserDto userDto) {
 
-        return LoungeResponseDto.from(loungeRepository.save(requestFromDto(loungeRequestDto)));
+        return LoungeResponse.from(loungeRepository.save(requestFromDto(loungeRequestDto, userDto)));
     }
 
     // request builder
-    private Lounge requestFromDto(LoungeRequestDto loungeRequestDto) {
+    private Lounge requestFromDto(LoungeRequestDto loungeRequestDto, UserDto userDto) {
+
+        UserAccount userAccount = userDto.toEntity();
         return Lounge.builder()
+                .userAccount(userAccount)
                 .title(loungeRequestDto.getTitle())
                 .content(loungeRequestDto.getContent())
                 .financialType(loungeRequestDto.getFinancialType())
@@ -36,19 +42,19 @@ public class LoungeService {
     // 라운지 글 가져오기
 
     @Transactional
-    public LoungeResponseDto getPost(Long postId) {
+    public LoungeResponse getPost(Long postId) {
 
-        return LoungeResponseDto.from(validatePost(postId));
+        return LoungeResponse.from(validatePost(postId));
     }
 
 
 
     // 라운지 글 업데이트
     @Transactional
-    public LoungeResponseDto updatePost (Long postId, LoungeRequestDto loungeRequestDto) {
+    public LoungeResponse updatePost (Long postId, LoungeRequestDto loungeRequestDto) {
         Lounge lounge = validatePost(postId);
         lounge.loungeUpdate(loungeRequestDto);
-        return LoungeResponseDto.from(lounge);
+        return LoungeResponse.from(lounge);
     }
 
 
