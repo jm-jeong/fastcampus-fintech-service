@@ -1,8 +1,5 @@
 package com.fastcampus.fintechservice.service;
 
-import com.fastcampus.fintechservice.db.user.UserInfo;
-import com.fastcampus.fintechservice.dto.UserInfoRequestDto;
-import com.fastcampus.fintechservice.dto.response.UserInfoResponseDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -69,18 +66,13 @@ public class UserService {
 	}
 
 
-	@Transactional
-	public UserInfoResponseDto updateDetailInfo(UserAccount user, UserInfoRequestDto request) {
-
-		user.getUserInfo().updateUserInfo(request);
-		return UserInfoResponseDto.from(user);
-	}
-
 	public UserDto loadUserByEmail(String email) throws UsernameNotFoundException {
 		return userRepository.findByEmail(email).map(UserDto::from)
 			.orElseThrow(() -> new ApiException(UserErrorCode.USER_NOT_FOUND, String.format("email is %s", email))
 			);
 	}
+
+
 
 
 

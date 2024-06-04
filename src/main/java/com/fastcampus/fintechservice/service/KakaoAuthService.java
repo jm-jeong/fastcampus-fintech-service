@@ -5,7 +5,6 @@ import com.fastcampus.fintechservice.config.utils.JwtTokenUtils;
 import com.fastcampus.fintechservice.db.user.UserAccount;
 import com.fastcampus.fintechservice.db.user.UserRepository;
 import com.fastcampus.fintechservice.dto.KakaoAccountDto;
-import com.fastcampus.fintechservice.dto.properties.KakaoOAuthProperties;
 import com.fastcampus.fintechservice.dto.response.KakaoTokenResponseDto;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
