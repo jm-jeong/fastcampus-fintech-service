@@ -1,5 +1,8 @@
 package com.fastcampus.fintechservice.controller;
 
+import com.fastcampus.fintechservice.common.api.Api;
+import com.fastcampus.fintechservice.dto.response.KakaoLoginResponse;
+import com.fastcampus.fintechservice.dto.response.UserResponse;
 import com.fastcampus.fintechservice.service.KakaoAuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,8 +18,8 @@ public class KakaoAuthController {
     private final KakaoAuthService kakaoAuthService;
 
     @GetMapping("/login/kakao")
-    public String loginKakao(@RequestParam("code") String code) {
+    public Api<KakaoLoginResponse> loginKakao(@RequestParam("code") String code) {
 
-        return kakaoAuthService.loginKakao(code);
+        return Api.OK(KakaoLoginResponse.of(kakaoAuthService.loginKakao(code)));
     }
 }
