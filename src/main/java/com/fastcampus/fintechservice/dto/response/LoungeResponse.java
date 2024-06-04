@@ -8,7 +8,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class LoungeResponseDto {
+public class LoungeResponse {
 
     private String title;
     private String content;
@@ -17,8 +17,8 @@ public class LoungeResponseDto {
     private FinancialType financialType;
 
 
-    public static LoungeResponseDto from(Lounge lounge) {
-        return LoungeResponseDto.builder()
+    public static LoungeResponse from(Lounge lounge) {
+        return LoungeResponse.builder()
                 .title(lounge.getTitle())
                 .content(lounge.getContent())
                 .createdDate(lounge.getCreatedAt())
