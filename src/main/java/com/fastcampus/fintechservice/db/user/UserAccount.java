@@ -44,19 +44,15 @@ public class UserAccount extends AuditingFields {
 	@Column
 	private String kakaoId;
 
-	@Embedded
-	private UserInfo userInfo;
-
 	@Builder
 	public UserAccount(Long id, String name, String email,
-					   String password, UserRole userRole, String kakaoId, UserInfo userInfo) {
+					   String password, UserRole userRole, String kakaoId) {
 		this.id = id;
 		this.name = name;
 		this.email = email;
 		this.password = password;
 		this.userRole = userRole;
 		this.kakaoId =	kakaoId;
-		this.userInfo = userInfo;
 	}
 
 	@Override
