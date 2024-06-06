@@ -11,8 +11,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 @Getter
+@Setter
+@ToString
 @Builder
 @AllArgsConstructor
 @Entity
@@ -21,27 +25,40 @@ import lombok.NoArgsConstructor;
 public class SavingOption {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	Long id;
+	@Column(name = "id", nullable = false)
+	private Long id;
 
-	@Column //저축 금리 [소수점 2자리]
-	private Double intr_rate2;
-	@Column //최고 우대금리[소수점 2자리]
-	private Double intr_rate;
-	@Column(length = 20) //저축 금리 유형명
-	private String intr_rate_type_nm;
-	@Column(length = 10) //저축 기간[단위: 개월]
-	private String save_trm;
-	@Column(length = 4) //저축 금리 유형
-	private String intr_rate_type;
-	@Column
-	private String rsrv_type;
-	@Column
-	private String rsrv_type_nm;
-	@Column
-	private String dcls_month;
-	@Column
-	private String fin_prdt_cd;
-	@Column
-	private String fin_co_no;
+	@Column(name = "intr_rate")
+	private Double intrRate;//저축 금리 [소수점 2자리]
+
+	@Column(name = "intr_rate2")
+	private Double intrRate2;//최고 우대금리[소수점 2자리]
+
+	@Column(name = "intr_rate_type", length = 4)
+	private String intrRateType;//저축 금리 유형명
+
+	@Column(name = "save_trm", length = 10)
+	private String saveTrm;//저축 기간[단위: 개월]
+
+	@Column(name = "intr_rate_type_nm", length = 20)
+	private String intrRateTypeNm;
+
+	@Column(name = "dcls_month")
+	private String dclsMonth;
+
+	@Column(name = "fin_co_no")
+	private String finCoNo;
+
+	@Column(name = "fin_prdt_cd")
+	private String finPrdtCd;
+
+	@Column(name = "saving_id")
+	String savingId;
+
+	@Column(name = "rsrv_type")
+	private String rsrvType;
+	@Column(name = "rsrv_type_nm")
+	private String rsrvTypeNm;
 
 }
+
