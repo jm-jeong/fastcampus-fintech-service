@@ -23,7 +23,7 @@ public class LikedController {
 
     // 금융 상품 찜하기
     @PostMapping
-    public Api<LikedResponse> registerLike(@RequestParam Long id, @RequestParam FinProductType type,
+    public Api<LikedResponse> registerLike(@RequestParam String id, @RequestParam FinProductType type,
                                            Authentication authentication) {
         return Api.OK(likedService.registerLike(
                 id, type, userService.loadUserByEmail(authentication.getName()))
@@ -41,7 +41,7 @@ public class LikedController {
 
     // 찜한 상품 삭제
     @DeleteMapping
-    public Api<MessageResponse> deleteLike(@RequestParam Long id, @RequestParam FinProductType type,
+    public Api<MessageResponse> deleteLike(@RequestParam String id, @RequestParam FinProductType type,
                                                     Authentication authentication) {
         return Api.OK(likedService.removeLiked(
                 id, type, userService.loadUserByEmail(authentication.getName()))

@@ -32,7 +32,7 @@ public class LikedService {
     private final RedisTemplate<String, String> redisTemplate;
 
     @Transactional
-    public LikedResponse registerLike(Long id, FinProductType type, UserDto user) {
+    public LikedResponse registerLike(String id, FinProductType type, UserDto user) {
         Liked liked = null;
         // type이 예금인 경우
         if (type == FinProductType.DEPOSIT) {
@@ -101,7 +101,7 @@ public class LikedService {
     }
 
     @Transactional
-    public MessageResponse removeLiked(Long id, FinProductType type, UserDto user) {
+    public MessageResponse removeLiked(String id, FinProductType type, UserDto user) {
         Liked liked = null;
         // type이 예금인 경우
         if (type == FinProductType.DEPOSIT) {
@@ -136,12 +136,12 @@ public class LikedService {
 
 
 
-    public Deposit validateDeposit(Long depositId) {
+    public Deposit validateDeposit(String depositId) {
         return depositRepository.findById(depositId)
                 .orElseThrow(() -> new ApiException(ErrorCode.BAD_REQUEST));
     }
 
-    public Saving validateSaving(Long savingId) {
+    public Saving validateSaving(String savingId) {
         return savingRepository.findById(savingId)
                 .orElseThrow(() -> new ApiException(ErrorCode.BAD_REQUEST));
     }
