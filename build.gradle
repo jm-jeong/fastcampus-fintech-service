@@ -49,7 +49,10 @@ dependencies {
     implementation 'com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.5'
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-configuration-processor
     implementation group: 'org.springframework.boot', name: 'spring-boot-configuration-processor', version: '3.3.0'
-
+    //Redis
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
+    implementation 'org.springframework.boot:spring-boot-starter-cache'
 
 }
 
