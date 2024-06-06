@@ -32,9 +32,9 @@ public class LikedResponse {
 
     private static String getFinancialProductName(Liked liked) {
         if (liked.getDeposit() != null) {
-            return liked.getDeposit().getFin_prdt_nm();
+            return liked.getDeposit().getFinPrdtNm();
         } else {
-            return liked.getSaving().getFin_prdt_nm();
+            return liked.getSaving().getFinPrdtNm();
         }
     }
 

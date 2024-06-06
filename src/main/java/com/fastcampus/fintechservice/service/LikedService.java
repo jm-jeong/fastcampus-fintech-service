@@ -40,7 +40,7 @@ public class LikedService {
             liked = likedRepository.findByUserAndDeposit(user.toEntity(), deposit);
             if (liked == null) {
                 redisTemplate.opsForValue().increment(
-                        RedisKey.DEPOSIT_LIKED_KEY.getKey() + deposit.getId(), 1L);
+                        RedisKey.DEPOSIT_LIKED_KEY.getKey() + deposit.getDepositId(), 1L);
                 liked = Liked.builder()
                         .deposit(deposit)
                         .user(user.toEntity())
@@ -48,16 +48,16 @@ public class LikedService {
                 likedRepository.save(liked);
 
                 return LikedResponse.from(
-                        deposit.getFin_prdt_nm(),
+                        deposit.getFinPrdtNm(),
                         redisTemplate.opsForValue().get(
-                                RedisKey.DEPOSIT_LIKED_KEY.getKey() + deposit.getId()),
+                                RedisKey.DEPOSIT_LIKED_KEY.getKey() + deposit.getDepositId()),
                         FinProductType.DEPOSIT
                 );
                 // 이미 찜하기 한 경우
             } else {
                 likedRepository.delete(liked);
                 redisTemplate.opsForValue().decrement(
-                        RedisKey.DEPOSIT_LIKED_KEY.getKey() + deposit.getId(), 1L);
+                        RedisKey.DEPOSIT_LIKED_KEY.getKey() + deposit.getDepositId(), 1L);
             }
             // type이 적금인 경우
         } else if (type == FinProductType.SAVING) {
@@ -65,7 +65,7 @@ public class LikedService {
             liked = likedRepository.findByUserAndSaving(user.toEntity(), saving);
             if (liked == null) {
                 redisTemplate.opsForValue().increment(
-                        RedisKey.SAVING_LIKED_KEY.getKey() + saving.getId(), 1L);
+                        RedisKey.SAVING_LIKED_KEY.getKey() + saving.getSavingId(), 1L);
                 liked = Liked.builder()
                         .saving(saving)
                         .user(user.toEntity())
@@ -73,15 +73,15 @@ public class LikedService {
                 likedRepository.save(liked);
 
                 return LikedResponse.from(
-                        saving.getFin_prdt_nm(),
+                        saving.getFinPrdtNm(),
                         redisTemplate.opsForValue().get(
-                                RedisKey.SAVING_LIKED_KEY.getKey() + saving.getId()),
+                                RedisKey.SAVING_LIKED_KEY.getKey() + saving.getSavingId()),
                         FinProductType.SAVING
                 );
             } else {
                 likedRepository.delete(liked);
                 redisTemplate.opsForValue().decrement(
-                        RedisKey.SAVING_LIKED_KEY.getKey() + saving.getId(), 1L);
+                        RedisKey.SAVING_LIKED_KEY.getKey() + saving.getSavingId(), 1L);
             }
         } else {
             throw new ApiException(ErrorCode.BAD_REQUEST);
@@ -89,12 +89,12 @@ public class LikedService {
 
         return LikedResponse.from(
                 type == FinProductType.DEPOSIT
-                        ? validateDeposit(id).getFin_prdt_nm()
-                        : validateSaving(id).getFin_prdt_nm(),
+                        ? validateDeposit(id).getFinPrdtNm()
+                        : validateSaving(id).getFinPrdtNm(),
                 redisTemplate.opsForValue().get(
                         type == FinProductType.DEPOSIT
-                                ? RedisKey.DEPOSIT_LIKED_KEY.getKey() + validateDeposit(id).getId()
-                                : RedisKey.SAVING_LIKED_KEY.getKey() + validateSaving(id).getId()
+                                ? RedisKey.DEPOSIT_LIKED_KEY.getKey() + validateDeposit(id).getDepositId()
+                                : RedisKey.SAVING_LIKED_KEY.getKey() + validateSaving(id).getSavingId()
                 ),
                 type
         );
@@ -109,7 +109,7 @@ public class LikedService {
             liked = likedRepository.findByUserAndDeposit(user.toEntity(), deposit);
             likedRepository.delete(liked);
             redisTemplate.opsForValue().decrement(
-                    RedisKey.SAVING_LIKED_KEY.getKey() + deposit.getId(), 1L);
+                    RedisKey.SAVING_LIKED_KEY.getKey() + deposit.getDepositId(), 1L);
 
 
         }else if (type == FinProductType.SAVING) {
@@ -117,7 +117,7 @@ public class LikedService {
             liked = likedRepository.findByUserAndSaving(user.toEntity(), saving);
             likedRepository.delete(liked);
             redisTemplate.opsForValue().decrement(
-                    RedisKey.SAVING_LIKED_KEY.getKey() + saving.getId(), 1L);
+                    RedisKey.SAVING_LIKED_KEY.getKey() + saving.getSavingId(), 1L);
         } else {
             throw new ApiException(ErrorCode.BAD_REQUEST);
         }
