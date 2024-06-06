@@ -1,12 +1,14 @@
 package com.fastcampus.fintechservice.db.finance;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -100,11 +102,15 @@ public class Saving {
 	@OneToMany
 	@JoinColumn(name = "saving_id", insertable = false, updatable = false)
 	@ToString.Exclude
-	private Set<SavingOption> savingOption = new LinkedHashSet<>();
+	private List<SavingOption> savingOptions = new ArrayList<SavingOption>();
 
 	@OneToMany
 	@JoinColumn(name = "saving_id", insertable = false, updatable = false)
 	@ToString.Exclude
-	private Set<SavingPreference> savingPreferences = new LinkedHashSet<>();
+	private List<SavingPreference> savingPreferences = new ArrayList<SavingPreference>();
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "fin_co_no", insertable = false, updatable = false)
+	private Bank bank;
 
 }
