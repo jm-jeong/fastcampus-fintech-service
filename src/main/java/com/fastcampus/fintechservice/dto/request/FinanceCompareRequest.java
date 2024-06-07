@@ -15,11 +15,11 @@ public class FinanceCompareRequest {
 
 	@NotNull
 	@NotBlank
-	String financeId1;
+	String id1;
 	@NotNull
 	@NotBlank
-	String financeId2;
+	String id2;
 	@NotNull
 	@NotBlank
-	String financeType;
+	String type;
 }

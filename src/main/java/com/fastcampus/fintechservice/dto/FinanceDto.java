@@ -55,7 +55,7 @@ public class FinanceDto {
 
 		return new FinanceDto(
 			deposit.getDepositId(),
-			"deposit",
+			"DEPOSIT",
 			deposit.getFinPrdtNm(),
 			deposit.getKorCoNm(),
 			imageBase64,
@@ -87,7 +87,7 @@ public class FinanceDto {
 
 		return new FinanceDto(
 			saving.getSavingId(),
-			"saving",
+			"SAVING",
 			saving.getFinPrdtNm(),
 			saving.getKorCoNm(),
 			imageBase64,

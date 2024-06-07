@@ -59,6 +59,7 @@ public class FinanceDetailDto {
 
 		String intrRateTypeNmM = deposit.getIntrRateTypeNmM();//복리
 		String intrRateTypeNmS = deposit.getIntrRateTypeNmS();//단리
+
 		ArrayList<String> tagList = new ArrayList<String>();
 		tagList.add(intrRateTypeNmM);
 		tagList.add(intrRateTypeNmS);
@@ -77,7 +78,7 @@ public class FinanceDetailDto {
 
 		return new FinanceDetailDto(
 			deposit.getDepositId(),
-			"deposit",
+			"DEPOSIT",
 			deposit.getFinPrdtNm(),
 			deposit.getKorCoNm(),
 			imageBase64,
@@ -119,6 +120,7 @@ public class FinanceDetailDto {
 		for (String joinWay : joinWayList) {
 			tagList.add(joinWay);
 		}
+		tagList.removeIf(Objects::isNull);//null제거
 
 		// 은행 이미지 base64로 인코딩
 		String imageBase64 = "";
@@ -130,7 +132,7 @@ public class FinanceDetailDto {
 
 		return new FinanceDetailDto(
 			saving.getSavingId(),
-			"deposit",
+			"SAVING",
 			saving.getFinPrdtNm(),
 			saving.getKorCoNm(),
 			imageBase64,
@@ -146,6 +148,11 @@ public class FinanceDetailDto {
 			saving.getEtcNote(),
 			saving.getJoinMember()
 		);
+	}
+
+	public FinanceDetailDto setLiked(boolean isLiked) {
+		this.isLiked = isLiked;
+		return this;
 	}
 
 }
