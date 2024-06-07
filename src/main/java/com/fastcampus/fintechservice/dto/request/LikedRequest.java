@@ -11,15 +11,12 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-public class FinanceCompareRequest {
+public class LikedRequest {
+	@NotNull
+	@NotBlank
+	private String id;
 
 	@NotNull
 	@NotBlank
-	String id1;
-	@NotNull
-	@NotBlank
-	String id2;
-	@NotNull
-	@NotBlank
-	String type;
+	private String type;
 }

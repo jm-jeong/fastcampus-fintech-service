@@ -66,4 +66,9 @@ public class FinanceShowDto {
 			false
 		);
 	}
+
+	public FinanceShowDto setLiked(boolean isLiked) {
+		this.isLiked = isLiked;
+		return this;
+	}
 }

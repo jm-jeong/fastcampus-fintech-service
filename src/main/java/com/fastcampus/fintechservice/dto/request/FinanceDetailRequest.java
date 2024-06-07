@@ -15,9 +15,10 @@ public class FinanceDetailRequest {
 
 	@NotNull
 	@NotBlank
-	String financeId;
+	String id;
 
 	@NotNull
 	@NotBlank
-	String financeType;
+	String type;
+
 }
