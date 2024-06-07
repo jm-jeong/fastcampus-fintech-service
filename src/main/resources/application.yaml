@@ -36,7 +36,8 @@ oauth2:
     user-info-url: https://kapi.kakao.com
     token-url-type: /oauth/token
     user-info-url-type: /v2/user/me
-
+frontend:
+  server-url: http://localhost:3000/
 #logging:
 #  level:
 #    org.springframework.web.servlet.resource.ResourceHttpRequestHandler: ERROR
