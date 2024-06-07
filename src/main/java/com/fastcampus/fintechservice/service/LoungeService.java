@@ -45,10 +45,11 @@ public class LoungeService {
     @Transactional
     public LoungeResponse registerPost(LoungeRequest loungeRequestDto, UserDto userDto) throws IOException {
         List<Liked> findLiked = likedRepository.findAllByUser(userDto.toEntity());
+        // 내가 찜하기한 상품이 있는지 확인
         if (findLiked.isEmpty()) {
             throw new ApiException(LoungeErrorCode.LIKED_PRODUCT_NOT_FOUND, String.format("findLiked is %s", findLiked));
         }
-
+        // 내가 찜하기한 상품인지 확인
         String finProductId1 = loungeRequestDto.getFinancialProduct1();
         String finProductId2 = loungeRequestDto.getFinancialProduct2();
         FinProductType finProductType = loungeRequestDto.getFinProductType();
@@ -70,7 +71,7 @@ public class LoungeService {
                         return liked.getSaving() != null && liked.getSaving().getSavingId().equals(finProductId2);
                     }
                 });
-
+        // 존재하지 않는 상품이 추가되었다면 에러처리
         if (!isFinProductId1Liked || !isFinProductId2Liked) {
             throw new ApiException(
                     LoungeErrorCode.LIKED_PRODUCT_NOT_FOUND,
@@ -135,7 +136,7 @@ public class LoungeService {
 
 
 
-    // 라운지 글 업데이트
+    // 라운지 글 업데이트, 제목이랑 내용만 수정 가능
     @Transactional
     public LoungeResponse updatePost (Long postId, LoungeRequest loungeRequest) throws IOException {
         Lounge lounge = validatePost(postId);
@@ -144,7 +145,7 @@ public class LoungeService {
     }
 
 
-    // 라운지 글
+    // 라운지 글 삭제
 
     @Transactional
     public MessageResponse deletePost(Long postId) {
@@ -175,7 +176,7 @@ public class LoungeService {
                         LoungeErrorCode.SAVING_NOT_FOUND,
                         String.format("savingId is %s", savingId)));
     }
-
+    // 금융상품 타입 확인 후 데이터 매핑
     public LoungeResponse responseValidateFinProductType(Lounge lounge) throws IOException {
         if(lounge.getFinProductType().equals(FinProductType.DEPOSIT)) {
             LoungeFinanceDto loungeFinanceDto1 =

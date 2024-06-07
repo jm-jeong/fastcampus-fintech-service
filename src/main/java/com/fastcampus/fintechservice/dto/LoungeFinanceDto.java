@@ -13,8 +13,8 @@ import java.io.IOException;
 @Getter
 public class LoungeFinanceDto {
 
-    private String financeId;//depostId or savingId
-    private FinProductType finProductType;//financeType
+    private String id;//depostId or savingId
+    private FinProductType finProductType;//financeProductType
     private String finPrdtNm;//금융상품명
 
     private String korCoNm;//은행명
@@ -35,7 +35,7 @@ public class LoungeFinanceDto {
 
 
         return LoungeFinanceDto.builder()
-                .financeId(deposit.getDepositId())
+                .id(deposit.getDepositId())
                 .finProductType(FinProductType.DEPOSIT)
                 .finPrdtNm(deposit.getFinPrdtNm())
                 .korCoNm(deposit.getKorCoNm())
@@ -54,7 +54,7 @@ public class LoungeFinanceDto {
                 savingOption -> Integer.parseInt(savingOption.getSaveTrm())).max().orElseThrow();
 
         return LoungeFinanceDto.builder()
-                .financeId(saving.getSavingId())
+                .id(saving.getSavingId())
                 .finProductType(FinProductType.SAVING)
                 .finPrdtNm(saving.getFinPrdtNm())
                 .korCoNm(saving.getKorCoNm())
