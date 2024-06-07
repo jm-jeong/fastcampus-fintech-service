@@ -36,7 +36,7 @@ public class FinanceShowDto {
 
 		return new FinanceShowDto(
 			deposit.getDepositId(),
-			"deposit",
+			"DEPOSIT",
 			deposit.getFinPrdtNm(),
 			deposit.getKorCoNm(),
 			imageBase64,
@@ -57,7 +57,7 @@ public class FinanceShowDto {
 
 		return new FinanceShowDto(
 			saving.getSavingId(),
-			"saving",
+			"SAVING",
 			saving.getFinPrdtNm(),
 			saving.getKorCoNm(),
 			imageBase64,
@@ -65,5 +65,10 @@ public class FinanceShowDto {
 			saving.getIntrRate2Show(),
 			false
 		);
+	}
+
+	public FinanceShowDto setLiked(boolean isLiked) {
+		this.isLiked = isLiked;
+		return this;
 	}
 }

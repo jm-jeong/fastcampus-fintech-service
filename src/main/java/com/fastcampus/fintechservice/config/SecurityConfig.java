@@ -36,6 +36,8 @@ public class SecurityConfig {
 	private final UserService userService;
 	@Value("${jwt.secret-key}")
 	private String secretKey;
+	@Value("${frontend.server-url}")
+	private String frontendServerUrl;
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -74,7 +76,7 @@ public class SecurityConfig {
 	@Bean
 	CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+		configuration.setAllowedOrigins(Arrays.asList(frontendServerUrl));
 		configuration.setAllowedMethods(Arrays.asList("HEAD", "POST", "GET", "DELETE", "PUT"));
 		configuration.setAllowedHeaders(Collections.singletonList("*"));
 		configuration.setAllowCredentials(true);

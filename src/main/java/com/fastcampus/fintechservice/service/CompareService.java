@@ -23,21 +23,21 @@ public class CompareService {
 	private final SavingRepository savingRepository;
 
 	public FinanceCompareResponse getFinanceData(FinanceCompareRequest financeCompareRequest) {
-		String financeType = financeCompareRequest.getFinanceType();
-		String financeId1 = financeCompareRequest.getFinanceId1();
-		String financeId2 = financeCompareRequest.getFinanceId2();
+		String financeType = financeCompareRequest.getType();
+		String financeId1 = financeCompareRequest.getId1();
+		String financeId2 = financeCompareRequest.getId2();
 
 		FinanceDto financeDto1 = new FinanceDto();
 		FinanceDto financeDto2 = new FinanceDto();
 
-		if (financeType.equals("deposit")) {
+		if (financeType.equals("DEPOSIT")) {
 			financeDto1 = depositRepository.findById(financeId1).map(FinanceDto::fromDeposit)
 				.orElseThrow(() -> new ApiException(FinanceErrorCode.FINANCE_NOT_FOUND,
 					String.format("Deposit 찾을 수 없음 Id : %s", financeId1)));
 			financeDto2 = depositRepository.findById(financeId2).map(FinanceDto::fromDeposit)
 				.orElseThrow(() -> new ApiException(FinanceErrorCode.FINANCE_NOT_FOUND,
 					String.format("Deposit 찾을 수 없음 Id : %s", financeId1)));
-		} else if (financeType.equals("saving")) {
+		} else if (financeType.equals("SAVING")) {
 			financeDto1 = savingRepository.findById(financeId1).map(FinanceDto::fromSaving)
 				.orElseThrow(() -> new ApiException(FinanceErrorCode.FINANCE_NOT_FOUND,
 					String.format("Saving 찾을 수 없음 Id : %s", financeId1)));

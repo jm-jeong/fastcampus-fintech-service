@@ -29,19 +29,19 @@ jwt:
 oauth2:
   kakao:
     grant-type: authorization_code
-    client-id: ENC(JSE9JutlViJ1nbX0wRPN9x4eQs1bk9+bCt8qZsl4prpMNkvZT5EAgj2kvJ5O6/GVUiud7EZ0SB0S52sxNpUEZ2n05qtfD+wIBG+acaRn/kg=)
-    client-secret: ENC(xnewH9iXZteOyxNkr5kEP3yLwwyHxOr+jQk8VBLpI0DTGJDo0nRhXJnDK01RiIJ+YY5MnWvGWtpA43N+Nd68j7ooxLx07Dcm5goOnElkTN0=)
+    client-id: unknownIdkfsjdifjoiesfjoiejsiofjesiofjioes
+    client-secret: unknownIdkfsjdifjoiesfjoiejsiofjesiofjioessd
     redirect-uri: http://localhost:8080/api/login/kakao
     token-url: https://kauth.kakao.com
     user-info-url: https://kapi.kakao.com
     token-url-type: /oauth/token
     user-info-url-type: /v2/user/me
-
-logging:
-  level:
-    org.springframework.web.servlet.resource.ResourceHttpRequestHandler: ERROR
-jasypt:
-  encryptor:
-    password: ${jasypt-password}
-
+frontend:
+  server-url: http://localhost:3000/
+#logging:
+#  level:
+#    org.springframework.web.servlet.resource.ResourceHttpRequestHandler: ERROR
+#jasypt:
+#  encryptor:
+#    password: ${jasypt-password}
 
