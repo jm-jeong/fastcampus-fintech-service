@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,7 +40,7 @@ public class LikedController {
 	}
 
 	// 내가 찜한 상품 목록 가져오기
-	@PostMapping("/me")
+	@GetMapping("/me")
 	public Api<List<LikedResponse>> getLikeList(Authentication authentication) {
 		return Api.OK(likedService.getLikedList(
 			userService.loadUserByEmail(authentication.getName()))
