@@ -1,9 +1,10 @@
 package com.fastcampus.fintechservice.db.lounge;
 
 
-import com.fastcampus.fintechservice.db.lounge.enums.FinancialType;
+import com.fastcampus.fintechservice.db.AuditingFields;
+import com.fastcampus.fintechservice.db.finance.enums.FinProductType;
 import com.fastcampus.fintechservice.db.user.UserAccount;
-import com.fastcampus.fintechservice.dto.request.LoungeRequestDto;
+import com.fastcampus.fintechservice.dto.request.LoungeRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,12 +13,14 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class Lounge {
+public class Lounge extends AuditingFields {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,20 +33,31 @@ public class Lounge {
     private UserAccount userAccount;
 
     @Column
+    private String financialProduct1;
+    @Column
+    private String financialProduct2;
+
+    @Column
     private String content;
 
     @Enumerated(EnumType.STRING)
-    private FinancialType financialType;
+    private FinProductType finProductType;
 
     @CreatedDate
-    private String createdAt;
+    private LocalDateTime createdAt;
     @LastModifiedDate
-    private String modifiedAt;
+    private LocalDateTime modifiedAt;
+
+    private int viewCount;
 
 
-    public void loungeUpdate(LoungeRequestDto loungeRequestDto) {
-        this.title = loungeRequestDto.getTitle();
-        this.content = loungeRequestDto.getContent();
+    public void loungeUpdate(LoungeRequest loungeRequest) {
+        this.title = loungeRequest.getTitle();
+        this.content = loungeRequest.getContent();
+    }
+
+    public void viewCount() {
+        this.viewCount++;
     }
 
 
