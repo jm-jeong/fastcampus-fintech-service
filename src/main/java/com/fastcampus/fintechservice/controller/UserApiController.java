@@ -1,11 +1,7 @@
 package com.fastcampus.fintechservice.controller;
 
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.fastcampus.fintechservice.common.api.Api;
 import com.fastcampus.fintechservice.dto.request.UserLoginRequest;
@@ -47,5 +43,4 @@ public class UserApiController {
 	public Api<UserResponse> me(Authentication authentication) {
 		return Api.OK(UserResponse.from(userService.loadUserByEmail(authentication.getName())));
 	}
-
 }

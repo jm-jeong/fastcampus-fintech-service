@@ -5,13 +5,43 @@ spring:
     password: Imtestpassword!@#
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
-    hibernate.ddl-auto: update
+    hibernate.ddl-auto: create
+    defer-datasource-initialization: true
     show-sql: true
     properties:
       hibernate.format_sql: true
       hibernate.default_batch_fetch_size: 100
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
+  sql:
+    init:
+      mode: always
+  data:
+    redis:
+      host: localhost
+      port: 6379
+    autoconfigure:
+      exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
+
 jwt:
   secret-key: fast-campus.com.fintech_2024_secret_key
   token.expired-time-ms: 86400000
+oauth2:
+  kakao:
+    grant-type: authorization_code
+    client-id: ENC(JSE9JutlViJ1nbX0wRPN9x4eQs1bk9+bCt8qZsl4prpMNkvZT5EAgj2kvJ5O6/GVUiud7EZ0SB0S52sxNpUEZ2n05qtfD+wIBG+acaRn/kg=)
+    client-secret: ENC(xnewH9iXZteOyxNkr5kEP3yLwwyHxOr+jQk8VBLpI0DTGJDo0nRhXJnDK01RiIJ+YY5MnWvGWtpA43N+Nd68j7ooxLx07Dcm5goOnElkTN0=)
+    redirect-uri: http://localhost:8080/api/login/kakao
+    token-url: https://kauth.kakao.com
+    user-info-url: https://kapi.kakao.com
+    token-url-type: /oauth/token
+    user-info-url-type: /v2/user/me
+
+logging:
+  level:
+    org.springframework.web.servlet.resource.ResourceHttpRequestHandler: ERROR
+jasypt:
+  encryptor:
+    password: ${jasypt-password}
+
+

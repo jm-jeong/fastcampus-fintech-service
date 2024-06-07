@@ -65,10 +65,15 @@ public class UserService {
 		return JwtTokenUtils.generateAccessToken(email, secretKey, expiredTimeMs);
 	}
 
+
 	public UserDto loadUserByEmail(String email) throws UsernameNotFoundException {
 		return userRepository.findByEmail(email).map(UserDto::from)
 			.orElseThrow(() -> new ApiException(UserErrorCode.USER_NOT_FOUND, String.format("email is %s", email))
 			);
 	}
+
+
+
+
 
 }
