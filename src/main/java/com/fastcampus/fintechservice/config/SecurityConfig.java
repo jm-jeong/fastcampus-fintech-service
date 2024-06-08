@@ -1,8 +1,5 @@
 package com.fastcampus.fintechservice.config;
 
-import java.util.Arrays;
-import java.util.Collections;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -42,26 +39,19 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
-		http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
-
-		http.csrf(AbstractHttpConfigurer::disable);
-
-		http.sessionManagement(httpSecuritySessionManagementConfigurer -> {
-			httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		});
-
-		http.exceptionHandling((exceptionHandling) ->
-			exceptionHandling.authenticationEntryPoint(new CustomAuthenticationEntryPoint())
-		);
-
-		http.addFilterBefore(new JwtTokenFilter(userService, secretKey), UsernamePasswordAuthenticationFilter.class);
-
-		http.authorizeHttpRequests(authorize -> authorize
-			.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-			.requestMatchers("/api/**").permitAll()
-			.requestMatchers(PERMIT).permitAll()
-			.anyRequest().authenticated()
-		);
+		http.cors(cors -> cors.configurationSource(corsConfigurationSource()))
+			.csrf(AbstractHttpConfigurer::disable)
+			.sessionManagement(httpSecuritySessionManagementConfigurer -> {
+				httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+			}).exceptionHandling((exceptionHandling) ->
+				exceptionHandling.authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+			).addFilterBefore(new JwtTokenFilter(userService, secretKey), UsernamePasswordAuthenticationFilter.class)
+			.authorizeHttpRequests(authorize -> authorize
+				.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+				.requestMatchers("/api/**").permitAll()
+				.requestMatchers(PERMIT).permitAll()
+				.anyRequest().authenticated()
+			);
 
 		return http.build();
 	}
@@ -75,13 +65,28 @@ public class SecurityConfig {
 
 	@Bean
 	CorsConfigurationSource corsConfigurationSource() {
+		// CorsConfiguration configuration = new CorsConfiguration();
+		// configuration.addAllowedOrigin("*");
+		// configuration.addAllowedMethod("*");
+		// configuration.addAllowedHeader("*");
+		// configuration.setAllowedOrigins(Arrays.asList(frontendServerUrl, "*"));
+		// configuration.setAllowedMethods(Arrays.asList("HEAD", "POST", "GET", "DELETE", "PUT"));
+		// configuration.setAllowedHeaders(Collections.singletonList("*"));
+		// configuration.setAllowCredentials(true);
+		// UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		// source.registerCorsConfiguration("/**", configuration);
+
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOrigins(Arrays.asList(frontendServerUrl, "*"));
-		configuration.setAllowedMethods(Arrays.asList("HEAD", "POST", "GET", "DELETE", "PUT"));
-		configuration.setAllowedHeaders(Collections.singletonList("*"));
-		configuration.setAllowCredentials(true);
+		// configuration.setAllowCredentials(true);//TODO:토큰때문에 기능 켜야한다고 생각했는데, CORS해제 안되서 끔
+		configuration.addAllowedOriginPattern("*");
+		configuration.addAllowedOrigin("*");
+		configuration.addAllowedHeader("*");
+		configuration.addAllowedMethod("*");
+		configuration.addExposedHeader("*");
+		configuration.setMaxAge(3600L);
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);
+
 		return source;
 	}
 
