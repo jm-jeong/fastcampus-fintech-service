@@ -1,12 +1,18 @@
 package com.fastcampus.fintechservice.controller;
 
-import com.fastcampus.fintechservice.dto.request.LoungeRequestDto;
+import com.fastcampus.fintechservice.common.api.Api;
+import com.fastcampus.fintechservice.dto.PageDto;
+import com.fastcampus.fintechservice.dto.request.LoungeRequest;
 import com.fastcampus.fintechservice.dto.response.LoungeResponse;
+import com.fastcampus.fintechservice.dto.response.MessageResponse;
 import com.fastcampus.fintechservice.service.LoungeService;
 import com.fastcampus.fintechservice.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 
 @RestController
@@ -16,34 +22,38 @@ public class LoungeController {
     private final LoungeService loungeService;
     private final UserService userService;
     @PostMapping
-    public LoungeResponse registerPost(
-            @RequestBody LoungeRequestDto loungeRequestDto, Authentication authentication) {
+    public Api<LoungeResponse> registerPost(
+            @RequestBody LoungeRequest loungeRequest, Authentication authentication) throws IOException {
 
 
-        return loungeService.registerPost(loungeRequestDto,
-                userService.loadUserByEmail(authentication.getName()));
+        return Api.OK(loungeService.registerPost(loungeRequest,
+                userService.loadUserByEmail(authentication.getName())));
 
     }
 
 
     @GetMapping("/{postId}")
-    public LoungeResponse getPost(@PathVariable Long postId) {
-        return loungeService.getPost(postId);
+    public Api<LoungeResponse> getPost(@PathVariable Long postId) throws IOException {
+
+        return Api.OK(loungeService.getPost(postId));
     }
 
-//    @GetMapping
-//    public LoungeResponseDto getAllPost() {
-//        return LoungeResponseDto.from(loungeService.getAllPost());
-//    }
+
+
+
+    @GetMapping
+    public Api<Page<LoungeResponse>> getAllPosts(@RequestBody PageDto pageDto) throws IOException {
+        return Api.OK(loungeService.getAllPosts(pageDto));
+    }
 
     @PutMapping("/{postId}")
-    public LoungeResponse updatePost(@PathVariable Long postId, @RequestBody LoungeRequestDto loungeRequestDto) {
-        return loungeService.updatePost(postId, loungeRequestDto);
+    public Api<LoungeResponse> updatePost(@PathVariable Long postId, @RequestBody LoungeRequest loungeRequest) throws IOException {
+        return Api.OK(loungeService.updatePost(postId, loungeRequest));
     }
 
     @DeleteMapping("/{postId}")
-    public String deletePost(@PathVariable Long postId) {
-        return loungeService.deletePost(postId);
+    public Api<MessageResponse> deletePost(@PathVariable Long postId) {
+        return Api.OK(loungeService.deletePost(postId));
     }
 
 }

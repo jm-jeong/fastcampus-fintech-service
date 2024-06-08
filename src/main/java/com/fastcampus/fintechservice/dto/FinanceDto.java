@@ -40,7 +40,7 @@ public class FinanceDto {
 		List<DepositOption> depositOptions = deposit.getDepositOptions();
 		List<Integer> saveList = new ArrayList<>();
 		for (DepositOption depositOption : depositOptions) {
-			saveList.add(Integer.parseInt(depositOption.getSaveTrm()));
+			saveList.add(depositOption.getSaveTrm());
 		}
 		Integer joinMin = Collections.min(saveList);
 		Integer joinMax = Collections.max(saveList);
@@ -72,7 +72,7 @@ public class FinanceDto {
 		List<SavingOption> savingOptions = saving.getSavingOptions();
 		List<Integer> saveList = new ArrayList<>();
 		for (SavingOption savingOption : savingOptions) {
-			saveList.add(Integer.parseInt(savingOption.getSaveTrm()));
+			saveList.add(savingOption.getSaveTrm());
 		}
 		Integer joinMin = Collections.min(saveList);
 		Integer joinMax = Collections.max(saveList);

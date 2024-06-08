@@ -37,8 +37,8 @@ public class SavingOption {
 	@Column(name = "intr_rate_type", length = 4)
 	private String intrRateType;//저축 금리 유형명
 
-	@Column(name = "save_trm", length = 10)
-	private String saveTrm;//저축 기간[단위: 개월]
+	@Column(name = "save_trm")
+	private Integer saveTrm;//저축 기간[단위: 개월]
 
 	@Column(name = "intr_rate_type_nm", length = 20)
 	private String intrRateTypeNm;
