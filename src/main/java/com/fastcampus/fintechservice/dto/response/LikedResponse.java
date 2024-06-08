@@ -1,7 +1,6 @@
 package com.fastcampus.fintechservice.dto.response;
 import com.fastcampus.fintechservice.db.finance.enums.FinProductType;
 import com.fastcampus.fintechservice.db.liked.Liked;
-import com.fastcampus.fintechservice.db.lounge.enums.FinancialType;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 import lombok.Getter;
