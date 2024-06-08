@@ -1,12 +1,14 @@
 package com.fastcampus.fintechservice.controller;
 
 import com.fastcampus.fintechservice.common.api.Api;
+import com.fastcampus.fintechservice.dto.PageDto;
 import com.fastcampus.fintechservice.dto.request.LoungeRequest;
 import com.fastcampus.fintechservice.dto.response.LoungeResponse;
 import com.fastcampus.fintechservice.dto.response.MessageResponse;
 import com.fastcampus.fintechservice.service.LoungeService;
 import com.fastcampus.fintechservice.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,13 +39,12 @@ public class LoungeController {
     }
 
 
-//    @GetMapping
-//    public Api<Page<LoungeResponse>> getAllPosts(@RequestParam(required = false)FinProductType finProductType,
-//                                                    @PageableDefault(page = 1) Pageable pageable) throws IOException {
-//
-//
-//        return Api.OK(loungeService.getAllLounge(finProductType, pageable));
-//    }
+
+
+    @GetMapping
+    public Api<Page<LoungeResponse>> getAllPosts(@RequestBody PageDto pageDto) throws IOException {
+        return Api.OK(loungeService.getAllPosts(pageDto));
+    }
 
     @PutMapping("/{postId}")
     public Api<LoungeResponse> updatePost(@PathVariable Long postId, @RequestBody LoungeRequest loungeRequest) throws IOException {

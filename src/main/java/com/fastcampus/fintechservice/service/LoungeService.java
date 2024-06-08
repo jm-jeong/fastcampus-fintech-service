@@ -13,6 +13,7 @@ import com.fastcampus.fintechservice.db.lounge.Lounge;
 import com.fastcampus.fintechservice.db.lounge.LoungeRepository;
 import com.fastcampus.fintechservice.db.user.UserAccount;
 import com.fastcampus.fintechservice.dto.LoungeFinanceDto;
+import com.fastcampus.fintechservice.dto.PageDto;
 import com.fastcampus.fintechservice.dto.UserDto;
 import com.fastcampus.fintechservice.dto.request.LoungeRequest;
 import com.fastcampus.fintechservice.dto.response.LoungeResponse;
@@ -38,7 +39,6 @@ public class LoungeService {
     private final DepositRepository depositRepository;
     private final SavingRepository savingRepository;
     private final RedisTemplate<String, String> redisTemplateView;
-
 
 
     // 라운지 글 생성
@@ -87,7 +87,7 @@ public class LoungeService {
 
         UserAccount userAccount = userDto.toEntity();
         return Lounge.builder()
-                .userAccount(userAccount)
+                .user(userAccount)
                 .title(loungeRequestDto.getTitle())
                 .content(loungeRequestDto.getContent())
                 .financialProduct1(loungeRequestDto.getFinancialProduct1())
@@ -102,47 +102,26 @@ public class LoungeService {
     public LoungeResponse getPost(Long postId) throws IOException {
 
         Lounge lounge = validatePost(postId);
-        viewPost(lounge.getUserAccount(), postId, lounge);
+        viewPost(lounge.getUser(), postId, lounge);
         return responseValidateFinProductType(lounge);
     }
 
+
     @Transactional
-    public Page<LoungeResponse> getAllLounge(FinProductType finProductType, Pageable pageable) throws IOException {
-        Page<Lounge> loungesPage;
-        int page = pageable.getPageNumber() -1;
-        int pageLimit = pageable.getPageSize();
+    public Page<LoungeResponse> getAllPosts(PageDto pageDto) throws IOException {
+        Sort sort = Sort.by(Sort.Direction.fromString(pageDto.getSort()), "viewCount");
+        Pageable pageable = PageRequest.of(pageDto.getPage(), pageDto.getSize(), sort);
 
-
-        if (finProductType == null) {
-            loungesPage = loungeRepository.findAllByOrderByViewCountDesc(
-                    PageRequest.of(page, pageLimit, Sort.by(Sort.Direction.DESC, "viewCount")));
-        } else {
-            loungesPage = loungeRepository.findAllByFinProductTypeOrderByViewCountDesc(
-                    pageable, finProductType);
-        }
+        Page<Lounge> loungePages = loungeRepository.findAll(pageable);
 
         List<LoungeResponse> loungeResponses = new ArrayList<>();
-        for (Lounge lounge : loungesPage.getContent()) {
+        for (Lounge lounge : loungePages.getContent()) {
             LoungeResponse loungeResponse = responseValidateFinProductType(lounge);
             loungeResponses.add(loungeResponse);
         }
-
-        return new PageImpl<>(loungeResponses, pageable, loungesPage.getTotalElements());
+        return new PageImpl<>(loungeResponses, pageable, loungePages.getTotalElements());
     }
 
-
-
-
-
-
-
-    // 라운지 글 업데이트, 제목이랑 내용만 수정 가능
-    @Transactional
-    public LoungeResponse updatePost (Long postId, LoungeRequest loungeRequest) throws IOException {
-        Lounge lounge = validatePost(postId);
-        lounge.loungeUpdate(loungeRequest);
-        return responseValidateFinProductType(lounge);
-    }
 
 
     // 라운지 글 삭제
@@ -158,22 +137,19 @@ public class LoungeService {
     // 라운지 글 유효성체크
     public Lounge validatePost(Long postId) {
         return loungeRepository.findById(postId)
-                .orElseThrow(() -> new ApiException(
-                        LoungeErrorCode.LOUNGE_POST_NOT_FOUND,
+                .orElseThrow(() -> new ApiException(LoungeErrorCode.LOUNGE_POST_NOT_FOUND,
                         String.format("postId is %s", postId)));
     }
 
     public Deposit validateDeposit(String depositId) {
         return depositRepository.findById(depositId)
-                .orElseThrow(() -> new ApiException(
-                        LoungeErrorCode.DEPOSIT_NOT_FOUND,
+                .orElseThrow(() -> new ApiException(LoungeErrorCode.DEPOSIT_NOT_FOUND,
                         String.format("depositId is %s", depositId)));
     }
 
     public Saving validateSaving(String savingId) {
         return savingRepository.findById(savingId)
-                .orElseThrow(() -> new ApiException(
-                        LoungeErrorCode.SAVING_NOT_FOUND,
+                .orElseThrow(() -> new ApiException(LoungeErrorCode.SAVING_NOT_FOUND,
                         String.format("savingId is %s", savingId)));
     }
     // 금융상품 타입 확인 후 데이터 매핑

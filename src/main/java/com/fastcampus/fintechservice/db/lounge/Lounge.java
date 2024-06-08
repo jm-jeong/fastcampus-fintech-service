@@ -30,7 +30,7 @@ public class Lounge extends AuditingFields {
     private String title;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "userId")
-    private UserAccount userAccount;
+    private UserAccount user;
 
     @Column
     private String financialProduct1;
@@ -48,7 +48,13 @@ public class Lounge extends AuditingFields {
     @LastModifiedDate
     private LocalDateTime modifiedAt;
 
+    @Column
     private int viewCount;
+
+    @Column
+    private int vote1;
+    @Column
+    private int vote2;
 
 
     public void loungeUpdate(LoungeRequest loungeRequest) {

@@ -29,7 +29,7 @@ public class LoungeResponse {
     public static LoungeResponse fromDeposit(Lounge lounge, LoungeFinanceDto dto1, LoungeFinanceDto dto2) {
         return LoungeResponse.builder()
                 .title(lounge.getTitle())
-                .username(lounge.getUserAccount().getName())
+                .username(lounge.getUser().getName())
                 .content(lounge.getContent())
                 .createdDate(lounge.getCreatedAt())
                 .finProductResponseDto(FinProductResponseDto.of(dto1, dto2))
@@ -42,7 +42,7 @@ public class LoungeResponse {
         return LoungeResponse.builder()
                 .title(lounge.getTitle())
                 .content(lounge.getContent())
-                .username(lounge.getUserAccount().getName())
+                .username(lounge.getUser().getName())
                 .createdDate(lounge.getCreatedAt())
                 .finProductResponseDto(FinProductResponseDto.of(dto1, dto2))
                 .updatedDate(lounge.getModifiedAt())
@@ -53,7 +53,7 @@ public class LoungeResponse {
     public static List<LoungeResponse> fromDepositList (List<Lounge> lounges, LoungeFinanceDto dto1, LoungeFinanceDto dto2) {
         return lounges.stream().map(lounge -> LoungeResponse.builder()
                 .title(lounge.getTitle())
-                .username(lounge.getUserAccount().getName())
+                .username(lounge.getUser().getName())
                 .createdDate(lounge.getCreatedAt())
                 .viewCount(lounge.getViewCount())
                 .finProductResponseDto(FinProductResponseDto.of(dto1, dto2))
@@ -61,6 +61,9 @@ public class LoungeResponse {
                 .finProductType(lounge.getFinProductType())
                 .build()).collect(Collectors.toList());
     }
+
+
+
 
 
 
