@@ -170,6 +170,14 @@ public class LoungeService {
     }
 
 
+    @Transactional
+    public LoungeResponse updatePost(Long postId, LoungeRequest loungeRequest) throws IOException {
+        Lounge lounge = validatePost(postId);
+        lounge.loungeUpdate(loungeRequest);
+        return responseValidateFinProductType(lounge);
+    }
+
+
     public void viewPost(UserAccount user, Long postId, Lounge lounge) {
         // 조회시 키 생성
         String key = "post:" + postId + ":user:" + user.getId();
