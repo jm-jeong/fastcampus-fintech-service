@@ -86,7 +86,7 @@ public class SecurityConfig {
 		configuration.addAllowedHeader("*");
 		configuration.addAllowedMethod("*");
 		configuration.addExposedHeader("*");
-		configuration.setAllowCredentials(false);
+		configuration.setAllowCredentials(true);
 		configuration.setAllowedOrigins(
 			Arrays.asList(frontendServerUrl, "http://localhost:3000", "https://127.0.0.1:3000",
 				"http://localhost:8080"));
