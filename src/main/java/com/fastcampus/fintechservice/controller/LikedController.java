@@ -31,7 +31,7 @@ public class LikedController {
 
 	// 금융 상품 찜하기
 	@PostMapping
-	public Api<LikedResponse> registerLike(@Valid @RequestBody LikedRequest likedRequest,
+	public Api<LikedResponse> registerLike(@RequestBody LikedRequest likedRequest,
 		Authentication authentication) {
 		return Api.OK(likedService.registerLike(likedRequest,
 				userService.loadUserByEmail(authentication.getName()))
@@ -40,7 +40,7 @@ public class LikedController {
 
 	// 내가 찜한 상품 목록 가져오기
 	@GetMapping("/me")
-	public Api<List<LikedResponse>> getLikeList(@RequestBody @Valid LikedListRequest request, Authentication authentication) {
+	public Api<List<LikedResponse>> getLikeList(@RequestBody LikedListRequest request, Authentication authentication) {
 		return Api.OK(likedService.getLikedList(request,
 			userService.loadUserByEmail(authentication.getName()))
 		);
@@ -48,7 +48,7 @@ public class LikedController {
 
 	// 찜한 상품 삭제
 	@DeleteMapping
-	public Api<MessageResponse> deleteLike(@Valid @RequestBody LikedRemoveRequest likedRemoveRequest,
+	public Api<MessageResponse> deleteLike(@RequestBody LikedRemoveRequest likedRemoveRequest,
 										   Authentication authentication) {
 		return Api.OK(
 				likedService.removeLiked(likedRemoveRequest,userService.loadUserByEmail(authentication.getName()))

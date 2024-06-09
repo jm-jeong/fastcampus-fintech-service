@@ -13,11 +13,6 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 public class LikedRequest {
-	@NotNull
-	@NotBlank
 	private String id;
-
-	@NotNull
-	@NotBlank
-	private FinProductType finProductType;
+	private FinProductType type;
 }

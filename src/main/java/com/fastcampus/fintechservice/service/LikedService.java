@@ -42,7 +42,7 @@ public class LikedService {
     public LikedResponse registerLike(LikedRequest likedRequest, UserDto user) {
         Liked liked = null;
         // type이 예금인 경우
-        if (likedRequest.getFinProductType() == FinProductType.DEPOSIT) {
+        if (likedRequest.getType() == FinProductType.DEPOSIT) {
             Deposit deposit = validateDeposit(likedRequest.getId());
             liked = likedRepository.findByUserAndDeposit(user.toEntity(), deposit);
             if (liked == null) {
@@ -70,7 +70,7 @@ public class LikedService {
 
 
             // type이 적금인 경우
-        } else if (likedRequest.getFinProductType() == FinProductType.SAVING) {
+        } else if (likedRequest.getType() == FinProductType.SAVING) {
             Saving saving = validateSaving(likedRequest.getId());
             liked = likedRepository.findByUserAndSaving(user.toEntity(), saving);
             if (liked == null) {
@@ -98,7 +98,7 @@ public class LikedService {
             }
         } else {
             throw new ApiException(LikedErrorCode.NOT_FOUND_FINANCE_TYPE,
-                    String.format("type is %s", likedRequest.getFinProductType()));
+                    String.format("type is %s", likedRequest.getType()));
         }
 
     }
@@ -135,6 +135,10 @@ public class LikedService {
         List<Liked> likedList = likedRepository.findAllByUserAndFinProductType(
                 userDto.toEntity(), request.getFinProductType());
 
+        if(likedList.isEmpty()) {
+            throw new ApiException(LikedErrorCode.LIKED_FINANCE_NOT_FOUND,
+                    String.format("likedList is %s", likedList));
+        }
         List<LikedResponse> likedResponses = new ArrayList<>();
         for (Liked liked : likedList) {
             try {
