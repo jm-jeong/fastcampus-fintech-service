@@ -15,7 +15,9 @@ public enum LoungeErrorCode implements ErrorCodeIfs{
     SAVING_NOT_FOUND(400, 1404, "적금 상품을 찾을 수 없음."),
     LIKED_PRODUCT_NOT_FOUND(400, 1404, "찜하기 리스트에서 동일한 상품을 찾을 수 없음."),
     VOTE_NOT_FOUND(400, 1404, "투표를 찾을 수 없음."),
-    VOTE_ALREADY_EXIST(400, 1404, "이미 투표한 게시글입니다.");
+    VOTE_ALREADY_EXIST(400, 1404, "이미 투표한 게시글입니다."),
+    LIKED_PRODUCT_DUPLICATE(400, 1404, "동일한 금융상품 입니다."),
+    LOUNGE_SEARCH_RESULT_NOT_FOUND(400, 1404, "검색 결과가 없습니다."),;
 
     private final Integer httpStatusCode;
     private final Integer errorCode;

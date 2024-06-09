@@ -38,6 +38,12 @@ public class Lounge extends AuditingFields {
     private String financialProduct2;
 
     @Column
+    private String financialProduct1Name;
+
+    @Column
+    private String financialProduct2Name;
+
+    @Column
     private String content;
 
     @Enumerated(EnumType.STRING)
@@ -60,6 +66,11 @@ public class Lounge extends AuditingFields {
     public void loungeUpdate(LoungeRequest loungeRequest) {
         this.title = loungeRequest.getTitle();
         this.content = loungeRequest.getContent();
+    }
+
+    public void updateProductName(String financialProduct1Name, String financialProduct2Name) {
+        this.financialProduct1Name = financialProduct1Name;
+        this.financialProduct2Name = financialProduct2Name;
     }
 
     public void viewCount() {
