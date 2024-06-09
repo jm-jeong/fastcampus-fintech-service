@@ -15,6 +15,7 @@ import com.fastcampus.fintechservice.db.user.enums.UserRole;
 import com.fastcampus.fintechservice.dto.UserDto;
 import com.fastcampus.fintechservice.dto.request.UserLoginRequest;
 import com.fastcampus.fintechservice.dto.request.UserRegisterRequest;
+import com.fastcampus.fintechservice.dto.response.UserEmailCheckResponse;
 import com.fastcampus.fintechservice.dto.response.UserResponse;
 
 import lombok.RequiredArgsConstructor;
@@ -65,15 +66,17 @@ public class UserService {
 		return JwtTokenUtils.generateAccessToken(email, secretKey, expiredTimeMs);
 	}
 
+	public UserEmailCheckResponse isEmailTaken(String email) {
+
+		boolean isTaken = userRepository.existsByEmail(email);
+
+		return new UserEmailCheckResponse(email, isTaken);
+	}
 
 	public UserDto loadUserByEmail(String email) throws UsernameNotFoundException {
 		return userRepository.findByEmail(email).map(UserDto::from)
 			.orElseThrow(() -> new ApiException(UserErrorCode.USER_NOT_FOUND, String.format("email is %s", email))
 			);
 	}
-
-
-
-
 
 }
