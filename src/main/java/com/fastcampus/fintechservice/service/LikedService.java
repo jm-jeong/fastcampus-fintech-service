@@ -1,6 +1,8 @@
 package com.fastcampus.fintechservice.service;
 
 import com.fastcampus.fintechservice.common.error.ErrorCode;
+import com.fastcampus.fintechservice.common.error.FinanceErrorCode;
+import com.fastcampus.fintechservice.common.error.LikedErrorCode;
 import com.fastcampus.fintechservice.common.exception.ApiException;
 import com.fastcampus.fintechservice.db.finance.Deposit;
 import com.fastcampus.fintechservice.db.finance.DepositRepository;
@@ -10,11 +12,15 @@ import com.fastcampus.fintechservice.db.finance.enums.FinProductType;
 import com.fastcampus.fintechservice.db.liked.Liked;
 import com.fastcampus.fintechservice.db.liked.LikedRepository;
 import com.fastcampus.fintechservice.dto.UserDto;
+import com.fastcampus.fintechservice.dto.request.LikedListRequest;
+import com.fastcampus.fintechservice.dto.request.LikedRemoveRequest;
+import com.fastcampus.fintechservice.dto.request.LikedRequest;
 import com.fastcampus.fintechservice.dto.response.LikedResponse;
 import com.fastcampus.fintechservice.dto.response.MessageResponse;
 import com.fastcampus.fintechservice.redis.RedisKey;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,15 +39,16 @@ public class LikedService {
     private final RedisTemplate<String, String> redisTemplate;
 
     @Transactional
-    public LikedResponse registerLike(String id, FinProductType type, UserDto user) {
+    public LikedResponse registerLike(LikedRequest likedRequest, UserDto user) {
         Liked liked = null;
         // type이 예금인 경우
-        if (type == FinProductType.DEPOSIT) {
-            Deposit deposit = validateDeposit(id);
+        if (likedRequest.getFinProductType() == FinProductType.DEPOSIT) {
+            Deposit deposit = validateDeposit(likedRequest.getId());
             liked = likedRepository.findByUserAndDeposit(user.toEntity(), deposit);
             if (liked == null) {
                 redisTemplate.opsForValue().increment(
                         RedisKey.DEPOSIT_LIKED_KEY.getKey() + deposit.getDepositId(), 1L);
+                deposit.countLiked(true);
                 liked = Liked.builder()
                         .deposit(deposit)
                         .user(user.toEntity())
@@ -57,17 +64,20 @@ public class LikedService {
                 );
                 // 이미 찜하기 한 경우
             } else {
-                likedRepository.delete(liked);
-                redisTemplate.opsForValue().decrement(
-                        RedisKey.DEPOSIT_LIKED_KEY.getKey() + deposit.getDepositId(), 1L);
+                throw new ApiException(LikedErrorCode.ALREADY_LIKED_FINANCE_DEPOSIT,
+                        String.format("id is %s", likedRequest.getId()));
             }
+
+
             // type이 적금인 경우
-        } else if (type == FinProductType.SAVING) {
-            Saving saving = validateSaving(id);
+        } else if (likedRequest.getFinProductType() == FinProductType.SAVING) {
+            Saving saving = validateSaving(likedRequest.getId());
             liked = likedRepository.findByUserAndSaving(user.toEntity(), saving);
             if (liked == null) {
+
                 redisTemplate.opsForValue().increment(
                         RedisKey.SAVING_LIKED_KEY.getKey() + saving.getSavingId(), 1L);
+                saving.countLiked(true);
                 liked = Liked.builder()
                         .saving(saving)
                         .user(user.toEntity())
@@ -82,45 +92,37 @@ public class LikedService {
                         FinProductType.SAVING
                 );
             } else {
-                likedRepository.delete(liked);
-                redisTemplate.opsForValue().decrement(
-                        RedisKey.SAVING_LIKED_KEY.getKey() + saving.getSavingId(), 1L);
+                throw new ApiException(
+                        LikedErrorCode.ALREADY_LIKED_FINANCE_SAVING,
+                        String.format("id is %s", likedRequest.getId()));
             }
         } else {
-            throw new ApiException(ErrorCode.BAD_REQUEST);
+            throw new ApiException(LikedErrorCode.NOT_FOUND_FINANCE_TYPE,
+                    String.format("type is %s", likedRequest.getFinProductType()));
         }
 
-        return LikedResponse.from(
-                type == FinProductType.DEPOSIT
-                        ? validateDeposit(id).getFinPrdtNm()
-                        : validateSaving(id).getFinPrdtNm(),
-                redisTemplate.opsForValue().get(
-                        type == FinProductType.DEPOSIT
-                                ? RedisKey.DEPOSIT_LIKED_KEY.getKey() + validateDeposit(id).getDepositId()
-                                : RedisKey.SAVING_LIKED_KEY.getKey() + validateSaving(id).getSavingId()
-                ),
-                type
-        );
     }
 
     @Transactional
-    public MessageResponse removeLiked(String id, FinProductType type, UserDto user) {
-        Liked liked = null;
-        // type이 예금인 경우
-        if (type == FinProductType.DEPOSIT) {
-            Deposit deposit = validateDeposit(id);
-            liked = likedRepository.findByUserAndDeposit(user.toEntity(), deposit);
-            likedRepository.delete(liked);
-            redisTemplate.opsForValue().decrement(
-                    RedisKey.SAVING_LIKED_KEY.getKey() + deposit.getDepositId(), 1L);
-
-
-        }else if (type == FinProductType.SAVING) {
-            Saving saving = validateSaving(id);
-            liked = likedRepository.findByUserAndSaving(user.toEntity(), saving);
-            likedRepository.delete(liked);
-            redisTemplate.opsForValue().decrement(
-                    RedisKey.SAVING_LIKED_KEY.getKey() + saving.getSavingId(), 1L);
+    public MessageResponse removeLiked(LikedRemoveRequest request, UserDto user) {
+        if (request.getFinProductType()== FinProductType.DEPOSIT) {
+            for (String id : request.getIds()) {
+                Deposit deposit = validateDeposit(id);
+                Liked liked = likedRepository.findByUserAndDeposit(user.toEntity(), deposit);
+                likedRepository.delete(liked);
+                redisTemplate.opsForValue().decrement(
+                        RedisKey.DEPOSIT_LIKED_KEY.getKey() + deposit.getDepositId(), 1L);
+                deposit.countLiked(false);
+            }
+        } else if (request.getFinProductType() == FinProductType.SAVING) {
+            for (String id : request.getIds()) {
+                Saving saving = validateSaving(id);
+                Liked liked = likedRepository.findByUserAndSaving(user.toEntity(), saving);
+                likedRepository.delete(liked);
+                redisTemplate.opsForValue().decrement(
+                        RedisKey.SAVING_LIKED_KEY.getKey() + saving.getSavingId(), 1L);
+                saving.countLiked(false);
+            }
         } else {
             throw new ApiException(ErrorCode.BAD_REQUEST);
         }
@@ -129,8 +131,9 @@ public class LikedService {
 
 
     @Transactional(readOnly = true)
-    public List<LikedResponse> getLikedList(UserDto userDto) {
-        List<Liked> likedList = likedRepository.findAllByUser(userDto.toEntity());
+    public List<LikedResponse> getLikedList(LikedListRequest request, UserDto userDto) {
+        List<Liked> likedList = likedRepository.findAllByUserAndFinProductType(
+                userDto.toEntity(), request.getFinProductType());
 
         List<LikedResponse> likedResponses = new ArrayList<>();
         for (Liked liked : likedList) {
@@ -147,14 +150,19 @@ public class LikedService {
 
 
 
+
+
+
     public Deposit validateDeposit(String depositId) {
         return depositRepository.findById(depositId)
-                .orElseThrow(() -> new ApiException(ErrorCode.BAD_REQUEST));
+                .orElseThrow(() -> new ApiException(FinanceErrorCode.FINANCE_NOT_FOUND,
+                        String.format("id is %s", depositId)));
     }
 
     public Saving validateSaving(String savingId) {
         return savingRepository.findById(savingId)
-                .orElseThrow(() -> new ApiException(ErrorCode.BAD_REQUEST));
+                .orElseThrow(() -> new ApiException(FinanceErrorCode.FINANCE_NOT_FOUND,
+                        String.format("id is %s", savingId)));
     }
 
 }
