@@ -18,6 +18,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
+import org.springframework.boot.context.properties.bind.DefaultValue;
 
 @Getter
 @Setter
@@ -112,5 +114,19 @@ public class Saving {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "fin_co_no", insertable = false, updatable = false)
 	private Bank bank;
+
+	@Column
+	@ColumnDefault("0")
+	private int likedCount; // 찜하기 수
+
+	public void countLiked(boolean isIncrement) {
+		if (isIncrement) {
+			this.likedCount++;
+		} else {
+			if (this.likedCount > 0) {
+				this.likedCount--;
+			}
+		}
+	}
 
 }
