@@ -87,7 +87,9 @@ public class SecurityConfig {
 		configuration.addAllowedMethod("*");
 		configuration.addExposedHeader("*");
 		configuration.setAllowCredentials(false);
-		configuration.setAllowedOrigins(Arrays.asList(frontendServerUrl, "http://localhost:3000/", "*"));
+		configuration.setAllowedOrigins(
+			Arrays.asList(frontendServerUrl, "http://localhost:3000", "https://127.0.0.1:3000",
+				"http://localhost:8080"));
 		configuration.setAllowedMethods(Arrays.asList("HEAD", "POST", "GET", "DELETE", "PUT"));
 		configuration.setAllowedHeaders(Collections.singletonList("*"));
 		configuration.setMaxAge(3600L);
