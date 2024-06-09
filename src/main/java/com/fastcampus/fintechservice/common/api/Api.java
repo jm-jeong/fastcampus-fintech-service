@@ -22,6 +22,13 @@ public class Api<T> {
 		return api;
 	}
 
+	public static <T> Api<T> OK(T data, String description) {
+		var api = new Api<T>();
+		api.result = Result.OK(description);
+		api.body = data;
+		return api;
+	}
+
 	public static Api<Object> ERROR(Result result) {
 		var api = new Api<Object>();
 		api.result = result;
