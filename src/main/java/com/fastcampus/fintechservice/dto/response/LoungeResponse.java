@@ -4,16 +4,20 @@ package com.fastcampus.fintechservice.dto.response;
 import com.fastcampus.fintechservice.db.finance.enums.FinProductType;
 import com.fastcampus.fintechservice.db.lounge.Lounge;
 import com.fastcampus.fintechservice.dto.LoungeFinanceDto;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-
+import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
+
 
 
 @Builder
 @Getter
+@RequiredArgsConstructor
+@AllArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class LoungeResponse {
 
     private String title;
@@ -24,6 +28,9 @@ public class LoungeResponse {
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
     private FinProductType finProductType;
+    private String finPrdtNm1;
+    private String finPrdtNm2;
+
 
 
     public static LoungeResponse fromDeposit(Lounge lounge, LoungeFinanceDto dto1, LoungeFinanceDto dto2) {
@@ -50,17 +57,33 @@ public class LoungeResponse {
                 .build();
     }
 
-    public static List<LoungeResponse> fromDepositList (List<Lounge> lounges, LoungeFinanceDto dto1, LoungeFinanceDto dto2) {
-        return lounges.stream().map(lounge -> LoungeResponse.builder()
+    public static LoungeResponse fromDepositList (Lounge lounge) {
+        return LoungeResponse.builder()
                 .title(lounge.getTitle())
                 .username(lounge.getUser().getName())
                 .createdDate(lounge.getCreatedAt())
                 .viewCount(lounge.getViewCount())
-                .finProductResponseDto(FinProductResponseDto.of(dto1, dto2))
                 .updatedDate(lounge.getModifiedAt())
                 .finProductType(lounge.getFinProductType())
-                .build()).collect(Collectors.toList());
+                .finPrdtNm1(lounge.getFinancialProduct1Name())
+                .finPrdtNm2(lounge.getFinancialProduct2Name())
+                .build();
     }
+
+    public static LoungeResponse fromSavingList(Lounge lounge) {
+        return LoungeResponse.builder()
+                .title(lounge.getTitle())
+                .content(lounge.getContent())
+                .username(lounge.getUser().getName())
+                .createdDate(lounge.getCreatedAt())
+                .viewCount(lounge.getViewCount())
+                .updatedDate(lounge.getModifiedAt())
+                .finProductType(lounge.getFinProductType())
+                .build();
+    }
+
+
+
 
 
 

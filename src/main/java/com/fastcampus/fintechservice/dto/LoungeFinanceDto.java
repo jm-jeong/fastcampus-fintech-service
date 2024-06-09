@@ -2,9 +2,12 @@ package com.fastcampus.fintechservice.dto;
 
 import java.io.IOException;
 
+
 import com.fastcampus.fintechservice.common.ImageConverter;
 import com.fastcampus.fintechservice.db.finance.Deposit;
+import com.fastcampus.fintechservice.db.finance.DepositOption;
 import com.fastcampus.fintechservice.db.finance.Saving;
+import com.fastcampus.fintechservice.db.finance.SavingOption;
 import com.fastcampus.fintechservice.db.finance.enums.FinProductType;
 
 import lombok.Builder;
@@ -29,9 +32,9 @@ public class LoungeFinanceDto {
 
 	public static LoungeFinanceDto depositFrom(Deposit deposit) throws IOException {
 		Integer min = deposit.getDepositOptions().stream().mapToInt(
-			depositOption -> depositOption.getSaveTrm()).min().orElseThrow();
+                DepositOption::getSaveTrm).min().orElseThrow();
 		Integer max = deposit.getDepositOptions().stream().mapToInt(
-			depositOption -> depositOption.getSaveTrm()).max().orElseThrow();
+                DepositOption::getSaveTrm).max().orElseThrow();
 
 		return LoungeFinanceDto.builder()
 			.id(deposit.getDepositId())
@@ -48,9 +51,10 @@ public class LoungeFinanceDto {
 
 	public static LoungeFinanceDto savingFrom(Saving saving) throws IOException {
 		Integer min = saving.getSavingOptions().stream().mapToInt(
-			savingOption -> savingOption.getSaveTrm()).min().orElseThrow();
+                SavingOption::getSaveTrm).min().orElseThrow();
 		Integer max = saving.getSavingOptions().stream().mapToInt(
-			savingOption -> savingOption.getSaveTrm()).max().orElseThrow();
+                SavingOption::getSaveTrm).max().orElseThrow();
+
 
 		return LoungeFinanceDto.builder()
 			.id(saving.getSavingId())
@@ -64,4 +68,5 @@ public class LoungeFinanceDto {
 			.joinMax(max)
 			.build();
 	}
+
 }
