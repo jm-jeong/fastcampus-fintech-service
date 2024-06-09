@@ -18,6 +18,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.hibernate.annotations.ColumnDefault;
 
 @Getter
 @Setter
@@ -92,6 +93,10 @@ public class Deposit {
 	@Column(name = "intr_rate_type_nm_m", length = 20)
 	private String intrRateTypeNmM;//복리
 
+	@Column(name = "like_count")
+	@ColumnDefault("0")
+	private int likedCount; // 찜하기 수
+
 	@OneToMany
 	@JoinColumn(name = "deposit_id", insertable = false, updatable = false)
 	@ToString.Exclude
@@ -106,4 +111,14 @@ public class Deposit {
 	@JoinColumn(name = "fin_co_no", insertable = false, updatable = false)
 	private Bank bank;
 
+
+	public void countLiked(boolean isIncrement) {
+		if (isIncrement) {
+			this.likedCount++;
+		} else {
+			if (this.likedCount > 0) {
+				this.likedCount--;
+			}
+		}
+	}
 }

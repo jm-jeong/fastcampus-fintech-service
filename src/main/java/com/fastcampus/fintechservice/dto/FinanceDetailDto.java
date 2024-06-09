@@ -13,13 +13,17 @@ import com.fastcampus.fintechservice.db.finance.DepositOption;
 import com.fastcampus.fintechservice.db.finance.Saving;
 import com.fastcampus.fintechservice.db.finance.SavingOption;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class FinanceDetailDto {
 
 	private String financeId;//depostId or savingId
@@ -147,6 +151,7 @@ public class FinanceDetailDto {
 			saving.getMtrtInt(),
 			saving.getEtcNote(),
 			saving.getJoinMember()
+
 		);
 	}
 

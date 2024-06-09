@@ -1,5 +1,6 @@
 package com.fastcampus.fintechservice.dto.request;
 
+import com.fastcampus.fintechservice.db.finance.enums.FinProductType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -12,11 +13,6 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 public class LikedRequest {
-	@NotNull
-	@NotBlank
 	private String id;
-
-	@NotNull
-	@NotBlank
-	private String type;
+	private FinProductType type;
 }
