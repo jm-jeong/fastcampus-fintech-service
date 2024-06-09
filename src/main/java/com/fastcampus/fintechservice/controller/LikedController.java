@@ -39,7 +39,7 @@ public class LikedController {
 	}
 
 	// 내가 찜한 상품 목록 가져오기
-	@GetMapping("/me")
+	@PostMapping("/me")
 	public Api<List<LikedResponse>> getLikeList(@RequestBody LikedListRequest request, Authentication authentication) {
 		return Api.OK(likedService.getLikedList(request,
 			userService.loadUserByEmail(authentication.getName()))
