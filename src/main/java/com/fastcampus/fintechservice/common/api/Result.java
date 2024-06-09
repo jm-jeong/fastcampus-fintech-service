@@ -26,6 +26,14 @@ public class Result {
 			.build();
 	}
 
+	public static Result OK(String description) {
+		return Result.builder()
+			.resultCode(ErrorCode.OK.getErrorCode())
+			.resultMessage(ErrorCode.OK.getDescription())
+			.resultDescription(description)
+			.build();
+	}
+
 	public static Result ERROR(ErrorCodeIfs errorCodeIfs) {
 		return Result.builder()
 			.resultCode(errorCodeIfs.getErrorCode())
