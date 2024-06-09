@@ -10,10 +10,10 @@ import com.fastcampus.fintechservice.db.finance.enums.FinProductType;
 import com.fastcampus.fintechservice.db.liked.Liked;
 import com.fastcampus.fintechservice.db.liked.LikedRepository;
 import com.fastcampus.fintechservice.db.lounge.Lounge;
+import com.fastcampus.fintechservice.db.lounge.LoungeQueryRepositoryImpl;
 import com.fastcampus.fintechservice.db.lounge.LoungeRepository;
 import com.fastcampus.fintechservice.db.user.UserAccount;
 import com.fastcampus.fintechservice.dto.LoungeFinanceDto;
-import com.fastcampus.fintechservice.dto.PageDto;
 import com.fastcampus.fintechservice.dto.UserDto;
 import com.fastcampus.fintechservice.dto.request.LoungeRequest;
 import com.fastcampus.fintechservice.dto.response.LoungeResponse;
@@ -26,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -39,20 +38,21 @@ public class LoungeService {
     private final DepositRepository depositRepository;
     private final SavingRepository savingRepository;
     private final RedisTemplate<String, String> redisTemplateView;
+    private final LoungeQueryRepositoryImpl loungeQueryRepository;
 
 
     // 라운지 글 생성
     @Transactional
-    public LoungeResponse registerPost(LoungeRequest loungeRequestDto, UserDto userDto) throws IOException {
+    public LoungeResponse registerPost(LoungeRequest loungeRequest, UserDto userDto) throws IOException {
         List<Liked> findLiked = likedRepository.findAllByUser(userDto.toEntity());
         // 내가 찜하기한 상품이 있는지 확인
         if (findLiked.isEmpty()) {
             throw new ApiException(LoungeErrorCode.LIKED_PRODUCT_NOT_FOUND, String.format("findLiked is %s", findLiked));
         }
         // 내가 찜하기한 상품인지 확인
-        String finProductId1 = loungeRequestDto.getFinancialProduct1();
-        String finProductId2 = loungeRequestDto.getFinancialProduct2();
-        FinProductType finProductType = loungeRequestDto.getFinProductType();
+        String finProductId1 = loungeRequest.getFinancialProduct1();
+        String finProductId2 = loungeRequest.getFinancialProduct2();
+        FinProductType finProductType = loungeRequest.getFinProductType();
 
         boolean isFinProductId1Liked = findLiked.stream()
                 .anyMatch(liked -> {
@@ -76,10 +76,15 @@ public class LoungeService {
             throw new ApiException(
                     LoungeErrorCode.LIKED_PRODUCT_NOT_FOUND,
                     String.format("finProductIdLiked is %s %s", isFinProductId1Liked, isFinProductId2Liked));
+        }else if (finProductId1.equals(finProductId2)) {
+            throw new ApiException(
+                    LoungeErrorCode.LIKED_PRODUCT_DUPLICATE,
+                    String.format("finProductId1 is %s, finProductId2 is %s", finProductId1, finProductId2));
         }
 
+
         return responseValidateFinProductType(
-                loungeRepository.save(requestFromDto(loungeRequestDto, userDto)));
+                loungeRepository.save(requestFromDto(loungeRequest, userDto)));
     }
 
     // request builder
@@ -92,6 +97,12 @@ public class LoungeService {
                 .content(loungeRequestDto.getContent())
                 .financialProduct1(loungeRequestDto.getFinancialProduct1())
                 .financialProduct2(loungeRequestDto.getFinancialProduct2())
+                .financialProduct1Name(loungeRequestDto.getFinProductType() == FinProductType.DEPOSIT ?
+                        depositRepository.findById(loungeRequestDto.getFinancialProduct1()).get().getFinPrdtNm() :
+                        savingRepository.findById(loungeRequestDto.getFinancialProduct1()).get().getFinPrdtNm())
+                .financialProduct2Name(loungeRequestDto.getFinProductType() == FinProductType.DEPOSIT ?
+                        depositRepository.findById(loungeRequestDto.getFinancialProduct2()).get().getFinPrdtNm() :
+                        savingRepository.findById(loungeRequestDto.getFinancialProduct2()).get().getFinPrdtNm())
                 .finProductType(loungeRequestDto.getFinProductType())
                 .build();
     }
@@ -107,19 +118,43 @@ public class LoungeService {
     }
 
 
+    // 카테고리 전체조회
     @Transactional
-    public Page<LoungeResponse> getAllPosts(PageDto pageDto) throws IOException {
-        Sort sort = Sort.by(Sort.Direction.fromString(pageDto.getSort()), "viewCount");
-        Pageable pageable = PageRequest.of(pageDto.getPage(), pageDto.getSize(), sort);
+    public Page<LoungeResponse> getAllCategoryPosts(FinProductType finProductType, Pageable pageable) {
 
-        Page<Lounge> loungePages = loungeRepository.findAll(pageable);
-
-        List<LoungeResponse> loungeResponses = new ArrayList<>();
-        for (Lounge lounge : loungePages.getContent()) {
-            LoungeResponse loungeResponse = responseValidateFinProductType(lounge);
-            loungeResponses.add(loungeResponse);
+        Page<LoungeResponse> loungeList = loungeQueryRepository.findAllByFinProductType(finProductType,pageable);
+        if(loungeList.isEmpty()) {
+            throw new ApiException(LoungeErrorCode.LOUNGE_POST_NOT_FOUND, "게시글이 없습니다.");
         }
-        return new PageImpl<>(loungeResponses, pageable, loungePages.getTotalElements());
+        return loungeList;
+    }
+
+    // 전체 조회
+    @Transactional
+    public Page<LoungeResponse> getAllPosts(Pageable pageable) {
+
+        Page<LoungeResponse> loungeList = loungeQueryRepository.findAllPosts(pageable);
+        if(loungeList.isEmpty()) {
+            throw new ApiException(LoungeErrorCode.LOUNGE_POST_NOT_FOUND, "게시글이 없습니다.");
+        }
+        return loungeList;
+    }
+    // 전체 검색
+    @Transactional
+    public Page<LoungeResponse> searchPosts(String keyword, Pageable pageable) {
+        Page<LoungeResponse> loungeList = loungeQueryRepository.searchPosts(keyword, pageable);
+        if(loungeList.isEmpty()) {
+            throw new ApiException(LoungeErrorCode.LOUNGE_SEARCH_RESULT_NOT_FOUND, "해당 키워드로 검색된 게시글이 없습니다.");
+        }
+        return loungeList;
+    }
+
+    // 라운지 글 업데이트(글제목, 글내용만 수정)
+    @Transactional
+    public LoungeResponse updatePost(Long postId, LoungeRequest loungeRequest) throws IOException {
+        Lounge lounge = validatePost(postId);
+        lounge.loungeUpdate(loungeRequest);
+        return responseValidateFinProductType(lounge);
     }
 
 
@@ -140,13 +175,13 @@ public class LoungeService {
                 .orElseThrow(() -> new ApiException(LoungeErrorCode.LOUNGE_POST_NOT_FOUND,
                         String.format("postId is %s", postId)));
     }
-
+    // 예금 유효성 체크
     public Deposit validateDeposit(String depositId) {
         return depositRepository.findById(depositId)
                 .orElseThrow(() -> new ApiException(LoungeErrorCode.DEPOSIT_NOT_FOUND,
                         String.format("depositId is %s", depositId)));
     }
-
+    // 저축 유효성 체크
     public Saving validateSaving(String savingId) {
         return savingRepository.findById(savingId)
                 .orElseThrow(() -> new ApiException(LoungeErrorCode.SAVING_NOT_FOUND,
@@ -170,14 +205,8 @@ public class LoungeService {
     }
 
 
-    @Transactional
-    public LoungeResponse updatePost(Long postId, LoungeRequest loungeRequest) throws IOException {
-        Lounge lounge = validatePost(postId);
-        lounge.loungeUpdate(loungeRequest);
-        return responseValidateFinProductType(lounge);
-    }
 
-
+    // 중복 조회수 방지
     public void viewPost(UserAccount user, Long postId, Lounge lounge) {
         // 조회시 키 생성
         String key = "post:" + postId + ":user:" + user.getId();

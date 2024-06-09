@@ -9,7 +9,6 @@ import com.fastcampus.fintechservice.db.finance.SavingRepository;
 import com.fastcampus.fintechservice.db.finance.enums.FinProductType;
 import com.fastcampus.fintechservice.db.liked.Liked;
 import com.fastcampus.fintechservice.db.liked.LikedRepository;
-import com.fastcampus.fintechservice.db.user.UserAccount;
 import com.fastcampus.fintechservice.dto.UserDto;
 import com.fastcampus.fintechservice.dto.response.LikedResponse;
 import com.fastcampus.fintechservice.dto.response.MessageResponse;
@@ -19,6 +18,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,6 +45,7 @@ public class LikedService {
                 liked = Liked.builder()
                         .deposit(deposit)
                         .user(user.toEntity())
+                        .finProductType(FinProductType.DEPOSIT)
                         .build();
                 likedRepository.save(liked);
 
@@ -69,6 +71,7 @@ public class LikedService {
                 liked = Liked.builder()
                         .saving(saving)
                         .user(user.toEntity())
+                        .finProductType(FinProductType.SAVING)
                         .build();
                 likedRepository.save(liked);
 
@@ -128,11 +131,19 @@ public class LikedService {
     @Transactional(readOnly = true)
     public List<LikedResponse> getLikedList(UserDto userDto) {
         List<Liked> likedList = likedRepository.findAllByUser(userDto.toEntity());
-        return likedList.stream()
-                .map(LikedResponse::fromDetail)
-                .collect(Collectors.toList());
-    }
 
+        List<LikedResponse> likedResponses = new ArrayList<>();
+        for (Liked liked : likedList) {
+            try {
+                likedResponses.add(LikedResponse.fromDetail(liked));
+            } catch (IOException e) {
+                // 예외 처리 로직 추가
+                // 예를 들어, 로그 기록, 사용자에게 에러 메시지 전달 등
+                e.printStackTrace();
+            }
+        }
+        return likedResponses;
+    }
 
 
 

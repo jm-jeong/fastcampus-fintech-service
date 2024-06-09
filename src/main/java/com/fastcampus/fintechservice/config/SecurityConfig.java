@@ -1,5 +1,8 @@
 package com.fastcampus.fintechservice.config;
 
+import java.util.Arrays;
+import java.util.Collections;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -83,6 +86,10 @@ public class SecurityConfig {
 		configuration.addAllowedHeader("*");
 		configuration.addAllowedMethod("*");
 		configuration.addExposedHeader("*");
+		configuration.setAllowCredentials(false);
+		configuration.setAllowedOrigins(Arrays.asList(frontendServerUrl, "http://localhost:3000/", "*"));
+		configuration.setAllowedMethods(Arrays.asList("HEAD", "POST", "GET", "DELETE", "PUT"));
+		configuration.setAllowedHeaders(Collections.singletonList("*"));
 		configuration.setMaxAge(3600L);
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
 		source.registerCorsConfiguration("/**", configuration);

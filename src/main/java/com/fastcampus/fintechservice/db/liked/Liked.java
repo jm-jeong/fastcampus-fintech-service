@@ -2,14 +2,10 @@ package com.fastcampus.fintechservice.db.liked;
 
 import com.fastcampus.fintechservice.db.finance.Deposit;
 import com.fastcampus.fintechservice.db.finance.Saving;
+import com.fastcampus.fintechservice.db.finance.enums.FinProductType;
 import com.fastcampus.fintechservice.db.user.UserAccount;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,7 +34,7 @@ public class Liked {
 	@JoinColumn(name = "savingId")
 	private Saving saving;
 
-	public boolean validateUser(UserAccount user) {
-		return !this.user.equals(user);
-	}
+	@Enumerated(EnumType.STRING)
+	private FinProductType finProductType;
+
 }
