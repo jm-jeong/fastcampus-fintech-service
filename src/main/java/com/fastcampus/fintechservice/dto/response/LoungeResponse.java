@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class LoungeResponse {
 
+    private Long id;
     private String title;
     private String content;
     private String username;
@@ -35,6 +36,7 @@ public class LoungeResponse {
 
     public static LoungeResponse fromDeposit(Lounge lounge, LoungeFinanceDto dto1, LoungeFinanceDto dto2) {
         return LoungeResponse.builder()
+                .id(lounge.getId())
                 .title(lounge.getTitle())
                 .username(lounge.getUser().getName())
                 .content(lounge.getContent())
@@ -47,6 +49,7 @@ public class LoungeResponse {
 
     public static LoungeResponse fromSaving(Lounge lounge, LoungeFinanceDto dto1, LoungeFinanceDto dto2) {
         return LoungeResponse.builder()
+                .id(lounge.getId())
                 .title(lounge.getTitle())
                 .content(lounge.getContent())
                 .username(lounge.getUser().getName())
@@ -59,6 +62,7 @@ public class LoungeResponse {
 
     public static LoungeResponse fromDepositList (Lounge lounge) {
         return LoungeResponse.builder()
+                .id(lounge.getId())
                 .title(lounge.getTitle())
                 .username(lounge.getUser().getName())
                 .createdDate(lounge.getCreatedAt())
@@ -72,6 +76,7 @@ public class LoungeResponse {
 
     public static LoungeResponse fromSavingList(Lounge lounge) {
         return LoungeResponse.builder()
+                .id(lounge.getId())
                 .title(lounge.getTitle())
                 .content(lounge.getContent())
                 .username(lounge.getUser().getName())
