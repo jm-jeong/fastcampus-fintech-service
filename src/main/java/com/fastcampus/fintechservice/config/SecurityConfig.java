@@ -31,10 +31,7 @@ public class SecurityConfig {
 
 	private static final String[] PERMIT = new String[] {
 		"/swagger-ui/**",
-		"/v3/api-docs/**",
-		"/api/v1/users/join",
-		"/api/v1/users/login",
-		"/api/v1/users/check-email",
+		"/v3/api-docs/**"
 	};
 	private final UserService userService;
 	@Value("${jwt.secret-key}")
@@ -54,9 +51,11 @@ public class SecurityConfig {
 			).addFilterBefore(new JwtTokenFilter(userService, secretKey), UsernamePasswordAuthenticationFilter.class)
 			.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-				// .requestMatchers("/api/**").permitAll()
+				.requestMatchers("/api/v1/users/**", "/api/v1/finances/**", "/api/v1/lounge", "/api/v1/lounge/search",
+					"/api/v1/lounge/all").permitAll()
 				.requestMatchers(PERMIT).permitAll()
 				.anyRequest().authenticated()
+
 			);
 
 		return http.build();
@@ -93,7 +92,7 @@ public class SecurityConfig {
 		configuration.setAllowedOrigins(
 			Arrays.asList(frontendServerUrl, "http://localhost:3000", "https://127.0.0.1:3000",
 				"http://localhost:8080"));
-		configuration.setAllowedMethods(Arrays.asList("HEAD", "POST", "GET", "DELETE", "PUT"));
+		configuration.setAllowedMethods(Arrays.asList("HEAD", "POST", "GET", "DELETE", "PUT", "OPTIONS"));
 		configuration.setAllowedHeaders(Collections.singletonList("*"));
 		configuration.setMaxAge(3600L);
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
