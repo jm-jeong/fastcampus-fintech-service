@@ -31,7 +31,10 @@ public class SecurityConfig {
 
 	private static final String[] PERMIT = new String[] {
 		"/swagger-ui/**",
-		"/v3/api-docs/**"
+		"/v3/api-docs/**",
+		"/api/v1/users/join",
+		"/api/v1/users/login",
+		"/api/v1/users/check-email",
 	};
 	private final UserService userService;
 	@Value("${jwt.secret-key}")
