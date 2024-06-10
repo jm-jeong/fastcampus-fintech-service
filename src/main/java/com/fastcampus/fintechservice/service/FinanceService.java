@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fastcampus.fintechservice.db.finance.FinanceQueryRepository;
+import com.fastcampus.fintechservice.db.finance.FinanceSearchRepository;
 import com.fastcampus.fintechservice.db.finance.enums.FinProductType;
 import com.fastcampus.fintechservice.dto.request.FinanceListRequest;
 import com.fastcampus.fintechservice.dto.response.FinanceListResponse;
@@ -36,6 +37,7 @@ public class FinanceService {
 	private final SavingRepository savingRepository;
 	private final LikedRepository likedRepository;
 	private final FinanceQueryRepository financeQueryRepository;
+	private final FinanceSearchRepository financeSearchRepository;
 
 	//금융상품 상세
 	public FinanceDetailResponse getFinanceDetail(FinanceDetailRequest financeDetailRequest, UserDto currentUser) {
@@ -88,6 +90,7 @@ public class FinanceService {
 		return loungeList;
 	}
 
+	//은행 선택 정렬
 	@Transactional
 	public Page<FinanceListResponse> getFinanceBankType(FinanceListRequest financeListRequest,Pageable pageable) {
 		Page<FinanceListResponse> loungeList = null;
@@ -100,5 +103,20 @@ public class FinanceService {
 			throw new ApiException(FinanceErrorCode.FINANCE_NOT_FOUND, "금융상품이 존재하지 않습니다.");
 		}
 		return loungeList;
+	}
+
+	//금융상품 검색
+	@Transactional
+	public Page<FinanceListResponse> searchFinancial(FinProductType finProductType, String keyword, Pageable pageable) {
+		Page<FinanceListResponse> financeListResponsePage = null;
+		if(finProductType.equals(FinProductType.DEPOSIT)) {
+			financeListResponsePage = financeSearchRepository.findAllDepositSearch(keyword, pageable);
+		}else if(finProductType.equals(FinProductType.SAVING)) {
+			financeListResponsePage = financeSearchRepository.findAllSavingSearch(keyword, pageable);
+		}
+		if(financeListResponsePage.isEmpty()) {
+			throw new ApiException(FinanceErrorCode.FINANCE_NOT_FOUND, "Deposit not found");
+		}
+		return financeListResponsePage;
 	}
 }
