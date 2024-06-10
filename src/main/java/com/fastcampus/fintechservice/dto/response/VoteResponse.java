@@ -10,6 +10,7 @@ import lombok.Getter;
 @Builder
 public class VoteResponse {
 
+    private Long voteId;
     private Long postId;
     private String voteProductId;
     private int vote1;
@@ -18,6 +19,7 @@ public class VoteResponse {
 
     public static VoteResponse from(Lounge lounge, Vote vote) {
         return VoteResponse.builder()
+                .voteId(vote.getId())
                 .postId(lounge.getId())
                 .vote1(lounge.getVote1())
                 .vote2(lounge.getVote2())
