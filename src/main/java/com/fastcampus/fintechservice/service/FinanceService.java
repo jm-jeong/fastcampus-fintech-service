@@ -3,6 +3,12 @@ package com.fastcampus.fintechservice.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fastcampus.fintechservice.db.finance.FinanceQueryRepository;
+import com.fastcampus.fintechservice.db.finance.enums.FinProductType;
+import com.fastcampus.fintechservice.dto.request.FinanceListRequest;
+import com.fastcampus.fintechservice.dto.response.FinanceListResponse;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +35,7 @@ public class FinanceService {
 	private final DepositRepository depositRepository;
 	private final SavingRepository savingRepository;
 	private final LikedRepository likedRepository;
+	private final FinanceQueryRepository financeQueryRepository;
 
 	//금융상품 상세
 	public FinanceDetailResponse getFinanceDetail(FinanceDetailRequest financeDetailRequest, UserDto currentUser) {
@@ -64,5 +71,34 @@ public class FinanceService {
 
 		return new FinanceDetailResponse(financeDto, financeShowDtoList);
 
+	}
+
+
+	@Transactional
+	public Page<FinanceListResponse> getFinanceAll(FinProductType finProductType, Pageable pageable) {
+		Page<FinanceListResponse> loungeList = null;
+		if(finProductType.equals(FinProductType.DEPOSIT)) {
+			loungeList = financeQueryRepository.findAllDeposit(pageable);
+		}else if(finProductType.equals(FinProductType.SAVING)) {
+			loungeList = financeQueryRepository.findAllSaving(pageable);
+		}
+		if(loungeList.isEmpty()) {
+			throw new ApiException(FinanceErrorCode.FINANCE_NOT_FOUND, "금융상품이 존재하지 않습니다.");
+		}
+		return loungeList;
+	}
+
+	@Transactional
+	public Page<FinanceListResponse> getFinanceBankType(FinanceListRequest financeListRequest,Pageable pageable) {
+		Page<FinanceListResponse> loungeList = null;
+		if(financeListRequest.getFinProductType().equals(FinProductType.DEPOSIT)) {
+			loungeList = financeQueryRepository.findAllDepositBankType(financeListRequest.getBankTypeList(), pageable);
+		}else if(financeListRequest.getFinProductType().equals(FinProductType.SAVING)) {
+			loungeList = financeQueryRepository.findAllSavingBankType(financeListRequest.getBankTypeList(), pageable);
+		}
+		if(loungeList.isEmpty()) {
+			throw new ApiException(FinanceErrorCode.FINANCE_NOT_FOUND, "금융상품이 존재하지 않습니다.");
+		}
+		return loungeList;
 	}
 }
