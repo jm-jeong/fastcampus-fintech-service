@@ -57,6 +57,7 @@ public class LikedService {
                 likedRepository.save(liked);
 
                 return LikedResponse.from(
+                        liked.getId(),
                         deposit.getFinPrdtNm(),
                         redisTemplate.opsForValue().get(
                                 RedisKey.DEPOSIT_LIKED_KEY.getKey() + deposit.getDepositId()),
@@ -86,6 +87,7 @@ public class LikedService {
                 likedRepository.save(liked);
 
                 return LikedResponse.from(
+                        liked.getId(),
                         saving.getFinPrdtNm(),
                         redisTemplate.opsForValue().get(
                                 RedisKey.SAVING_LIKED_KEY.getKey() + saving.getSavingId()),
