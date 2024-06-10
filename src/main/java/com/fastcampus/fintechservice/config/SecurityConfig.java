@@ -54,9 +54,10 @@ public class SecurityConfig {
 			).addFilterBefore(new JwtTokenFilter(userService, secretKey), UsernamePasswordAuthenticationFilter.class)
 			.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-				// .requestMatchers("/api/**").permitAll()
+				.requestMatchers("/api/**").permitAll()
 				.requestMatchers(PERMIT).permitAll()
 				.anyRequest().authenticated()
+
 			);
 
 		return http.build();
