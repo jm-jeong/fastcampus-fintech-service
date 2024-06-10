@@ -31,4 +31,10 @@ public class FinanceListController {
                                                                  Pageable pageable) {
         return Api.OK(financeService.getFinanceBankType(financeListRequest, pageable));
     }
+
+    @GetMapping("/deposit/search")
+    public Api<Page<FinanceListResponse>> searchDeposit(FinProductType finProductType,String keyword, Pageable pageable) {
+
+        return Api.OK(financeService.searchFinancial(finProductType,keyword, pageable));
+    }
 }

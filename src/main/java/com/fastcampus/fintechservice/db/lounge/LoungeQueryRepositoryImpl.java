@@ -83,7 +83,7 @@ public class LoungeQueryRepositoryImpl implements LoungeQueryRepository{
 
     @NotNull
     private Page<LoungeResponse> getLoungeResponses(Pageable pageable, long totalCount, List<Lounge> loungeResult) {
-        if (lounge.finProductType.equals(FinProductType.DEPOSIT.toString())) {
+        if (lounge.finProductType.toString().equals(FinProductType.DEPOSIT.toString())) {
             List<LoungeResponse> responseDtoList = loungeResult.stream()
                     .map(LoungeResponse::fromDepositList)
                     .toList();

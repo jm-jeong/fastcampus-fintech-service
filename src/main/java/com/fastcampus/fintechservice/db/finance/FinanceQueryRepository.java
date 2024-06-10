@@ -1,5 +1,6 @@
 package com.fastcampus.fintechservice.db.finance;
 
+import com.fastcampus.fintechservice.config.utils.PagingUtils;
 import com.fastcampus.fintechservice.db.finance.enums.BankType;
 import com.fastcampus.fintechservice.db.finance.enums.FinProductType;
 import com.fastcampus.fintechservice.db.lounge.Lounge;
@@ -33,7 +34,7 @@ public class FinanceQueryRepository{
     public Page<FinanceListResponse> findAllDeposit(Pageable pageable) {
         long totalCount = jpaQueryFactory.selectFrom(deposit).stream().count();
 
-        Pageable validPageable = validPageable(pageable, (int) totalCount);
+        Pageable validPageable = PagingUtils.validPageable(pageable, (int) totalCount);
 
         List<Deposit> loungeResult = jpaQueryFactory.selectFrom(deposit)
                 .orderBy(deposit.likedCount.desc())
@@ -54,7 +55,7 @@ public class FinanceQueryRepository{
         long totalCount = jpaQueryFactory.selectFrom(saving)
                 .stream().count();
 
-        Pageable validPageable = validPageable(pageable, (int) totalCount);
+        Pageable validPageable = PagingUtils.validPageable(pageable, (int) totalCount);
 
         List<Saving> loungeResult = jpaQueryFactory.selectFrom(saving)
                 .orderBy(saving.likedCount.desc())
@@ -72,6 +73,7 @@ public class FinanceQueryRepository{
 
 
 
+
     // 은행별 예금 조회
     public Page<FinanceListResponse> findAllDepositBankType(List<BankType> bankList, Pageable pageable) {
 
@@ -82,7 +84,7 @@ public class FinanceQueryRepository{
         long totalCount = jpaQueryFactory.selectFrom(deposit)
                 .where(bankTypeFilter)
                 .stream().count();
-        Pageable validPageable = validPageable(pageable, (int) totalCount);
+        Pageable validPageable = PagingUtils.validPageable(pageable, (int) totalCount);
 
         List<Deposit> loungeResult = jpaQueryFactory.selectFrom(deposit)
                 .where(bankTypeFilter)
@@ -109,7 +111,7 @@ public class FinanceQueryRepository{
                 .where(bankTypeFilter)
                 .stream().count();
 
-        Pageable validPageable = validPageable(pageable, (int) totalCount);
+        Pageable validPageable = PagingUtils.validPageable(pageable, (int) totalCount);
 
         List<Saving> loungeResult = jpaQueryFactory.selectFrom(saving)
                 .where(bankTypeFilter)
@@ -124,21 +126,5 @@ public class FinanceQueryRepository{
 
         return new PageImpl<>(responseDtoList, validPageable, totalCount);
     }
-
-    // 페이지 크게 입력하면 에러나는 오류 해결
-    public Pageable validPageable(Pageable pageable, int totalCount) {
-        // 유효한 페이지 번호 및 크기 검증
-        int requestedPage = pageable.getPageNumber();
-        int requestedSize = pageable.getPageSize();
-
-        // 실제 데이터의 범위를 벗어나는 경우 기본값으로 대체
-        int maxPage = (int) Math.ceil((double) totalCount / requestedSize);
-        if (requestedPage > maxPage) {
-            requestedPage = 0; // 첫 페이지로 대체
-        }
-
-        return PageRequest.of(requestedPage, requestedSize, pageable.getSort());
-    }
-
 
 }

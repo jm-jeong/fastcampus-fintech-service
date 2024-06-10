@@ -2,6 +2,7 @@ package com.fastcampus.fintechservice.controller;
 
 import java.util.List;
 
+import com.fastcampus.fintechservice.db.finance.enums.FinProductType;
 import com.fastcampus.fintechservice.dto.request.LikedListRequest;
 import com.fastcampus.fintechservice.dto.request.LikedRemoveRequest;
 import org.springframework.security.core.Authentication;
@@ -39,10 +40,10 @@ public class LikedController {
 	}
 
 	// 내가 찜한 상품 목록 가져오기
-	@PostMapping("/me")
-	public Api<List<LikedResponse>> getLikeList(@RequestBody LikedListRequest request, Authentication authentication) {
-		return Api.OK(likedService.getLikedList(request,
-			userService.loadUserByEmail(authentication.getName()))
+	@GetMapping("/me")
+	public Api<List<LikedResponse>> getLikeList(FinProductType finProductType, Authentication authentication) {
+		return Api.OK(likedService.getLikedList(finProductType,
+				userService.loadUserByEmail(authentication.getName()))
 		);
 	}
 
