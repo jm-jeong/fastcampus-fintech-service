@@ -31,13 +31,7 @@ public class SecurityConfig {
 
 	private static final String[] PERMIT = new String[] {
 		"/swagger-ui/**",
-		"/v3/api-docs/**",
-		"/api/v1/users/**",
-		"/api/v1/finances",
-		"/api/v1/finances/**",
-		"/api/v1/lounge",
-		"/api/v1/lounge/search",
-		"/api/v1/lounge/all"
+		"/v3/api-docs/**"
 	};
 	private final UserService userService;
 	@Value("${jwt.secret-key}")
@@ -57,7 +51,8 @@ public class SecurityConfig {
 			).addFilterBefore(new JwtTokenFilter(userService, secretKey), UsernamePasswordAuthenticationFilter.class)
 			.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-				// .requestMatchers("/api/**").permitAll()
+				.requestMatchers("/api/v1/users/**", "/api/v1/finances/**", "/api/v1/lounge", "/api/v1/lounge/search",
+					"/api/v1/lounge/all").permitAll()
 				.requestMatchers(PERMIT).permitAll()
 				.anyRequest().authenticated()
 
