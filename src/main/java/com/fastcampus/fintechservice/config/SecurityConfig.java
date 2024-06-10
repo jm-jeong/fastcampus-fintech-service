@@ -94,7 +94,7 @@ public class SecurityConfig {
 		configuration.setAllowedOrigins(
 			Arrays.asList(frontendServerUrl, "http://localhost:3000", "https://127.0.0.1:3000",
 				"http://localhost:8080"));
-		configuration.setAllowedMethods(Arrays.asList("HEAD", "POST", "GET", "DELETE", "PUT"));
+		configuration.setAllowedMethods(Arrays.asList("HEAD", "POST", "GET", "DELETE", "PUT", "OPTIONS"));
 		configuration.setAllowedHeaders(Collections.singletonList("*"));
 		configuration.setMaxAge(3600L);
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
