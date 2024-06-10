@@ -131,14 +131,9 @@ public class LikedService {
 
 
     @Transactional(readOnly = true)
-    public List<LikedResponse> getLikedList(LikedListRequest request, UserDto userDto) {
-        List<Liked> likedList = likedRepository.findAllByUserAndFinProductType(
-                userDto.toEntity(), request.getFinProductType());
+    public List<LikedResponse> getLikedList(FinProductType finProductType,UserDto userDto) {
+        List<Liked> likedList = likedRepository.findAllByUserAndFinProductType(userDto.toEntity(), finProductType);
 
-        if(likedList.isEmpty()) {
-            throw new ApiException(LikedErrorCode.LIKED_FINANCE_NOT_FOUND,
-                    String.format("likedList is %s", likedList));
-        }
         List<LikedResponse> likedResponses = new ArrayList<>();
         for (Liked liked : likedList) {
             try {
