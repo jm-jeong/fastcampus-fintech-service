@@ -18,7 +18,6 @@ public class FinanceListResponse {
     private FinanceDetailDto financeDetailDto;
 
 
-
     public static FinanceListResponse fromDepositProductList(Deposit deposit) {
 
         String[] joins =deposit.getJoinWay().split(",");
@@ -28,6 +27,7 @@ public class FinanceListResponse {
                         .financeId(deposit.getDepositId())
                         .finPrdtNm(deposit.getFinPrdtNm())
                         .korCoNm(deposit.getKorCoNm())
+                        .isLiked(false)
                         .imageBase64(deposit.getBank().getImageName())
                         .intrRateShow(deposit.getIntrRateShow())
                         .intrRate2Show(deposit.getIntrRate2Show())
@@ -44,11 +44,13 @@ public class FinanceListResponse {
                         .financeId(saving.getSavingId())
                         .finPrdtNm(saving.getFinPrdtNm())
                         .korCoNm(saving.getKorCoNm())
+                        .isLiked(false)
                         .imageBase64(saving.getBank().getImageName())
                         .intrRateShow(saving.getIntrRateShow())
                         .intrRate2Show(saving.getIntrRate2Show())
                         .joinWayList(joins).build())
                         .build();
     }
+
 
 }
