@@ -16,6 +16,7 @@ import com.fastcampus.fintechservice.db.user.UserAccount;
 import com.fastcampus.fintechservice.dto.LoungeFinanceDto;
 import com.fastcampus.fintechservice.dto.UserDto;
 import com.fastcampus.fintechservice.dto.request.LoungeRequest;
+import com.fastcampus.fintechservice.dto.request.LoungeUpdateRequest;
 import com.fastcampus.fintechservice.dto.response.LoungeResponse;
 import com.fastcampus.fintechservice.dto.response.MessageResponse;
 import lombok.RequiredArgsConstructor;
@@ -151,9 +152,9 @@ public class LoungeService {
 
     // 라운지 글 업데이트(글제목, 글내용만 수정)
     @Transactional
-    public LoungeResponse updatePost(Long postId, LoungeRequest loungeRequest) throws IOException {
+    public LoungeResponse updatePost(Long postId, LoungeUpdateRequest loungeUpdateRequest) throws IOException {
         Lounge lounge = validatePost(postId);
-        lounge.loungeUpdate(loungeRequest);
+        lounge.loungeUpdate(loungeUpdateRequest);
         return responseValidateFinProductType(lounge);
     }
 

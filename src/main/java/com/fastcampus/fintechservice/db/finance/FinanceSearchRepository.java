@@ -29,6 +29,7 @@ public class FinanceSearchRepository {
         Pageable validPageable = PagingUtils.validPageable(pageable, (int) totalCount);
 
         List<Deposit> loungeResult = jpaQueryFactory.selectFrom(deposit)
+                .where(depositKeywordEq(keyword))
                 .orderBy(deposit.likedCount.desc())
                 .offset(validPageable.getOffset())
                 .limit(validPageable.getPageSize())
