@@ -1,10 +1,13 @@
 package com.fastcampus.fintechservice.db.lounge;
 
 
+import com.fastcampus.fintechservice.common.error.UserErrorCode;
+import com.fastcampus.fintechservice.common.exception.ApiException;
 import com.fastcampus.fintechservice.db.AuditingFields;
 import com.fastcampus.fintechservice.db.finance.enums.FinProductType;
 import com.fastcampus.fintechservice.db.user.UserAccount;
 import com.fastcampus.fintechservice.dto.request.LoungeRequest;
+import com.fastcampus.fintechservice.dto.request.LoungeUpdateRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -63,18 +66,19 @@ public class Lounge extends AuditingFields {
     private int vote2;
 
 
-    public void loungeUpdate(LoungeRequest loungeRequest) {
-        this.title = loungeRequest.getTitle();
-        this.content = loungeRequest.getContent();
-    }
-
-    public void updateProductName(String financialProduct1Name, String financialProduct2Name) {
-        this.financialProduct1Name = financialProduct1Name;
-        this.financialProduct2Name = financialProduct2Name;
+    public void loungeUpdate(LoungeUpdateRequest loungeUpdateRequest) {
+        this.title = loungeUpdateRequest.getTitle();
+        this.content = loungeUpdateRequest.getContent();
     }
 
     public void viewCount() {
         this.viewCount++;
+    }
+
+
+    public boolean validateUser(UserAccount user) {
+
+        return !this.user.equals(user);
     }
 
 
