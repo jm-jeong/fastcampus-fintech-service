@@ -38,6 +38,8 @@ oauth2:
     user-info-url-type: /v2/user/me
 frontend:
   server-url: http://localhost:3000/
+aws:
+  s3-url: https://amazon_s3_fake_url.com
 #logging:
 #  level:
 #    org.springframework.web.servlet.resource.ResourceHttpRequestHandler: ERROR
