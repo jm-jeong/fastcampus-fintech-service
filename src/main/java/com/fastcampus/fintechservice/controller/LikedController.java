@@ -3,7 +3,6 @@ package com.fastcampus.fintechservice.controller;
 import java.util.List;
 
 import com.fastcampus.fintechservice.db.finance.enums.FinProductType;
-import com.fastcampus.fintechservice.dto.request.LikedListRequest;
 import com.fastcampus.fintechservice.dto.request.LikedRemoveRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,7 +18,6 @@ import com.fastcampus.fintechservice.dto.response.MessageResponse;
 import com.fastcampus.fintechservice.service.LikedService;
 import com.fastcampus.fintechservice.service.UserService;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController

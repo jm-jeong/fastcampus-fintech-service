@@ -12,7 +12,6 @@ import com.fastcampus.fintechservice.db.finance.enums.FinProductType;
 import com.fastcampus.fintechservice.db.liked.Liked;
 import com.fastcampus.fintechservice.db.liked.LikedRepository;
 import com.fastcampus.fintechservice.dto.UserDto;
-import com.fastcampus.fintechservice.dto.request.LikedListRequest;
 import com.fastcampus.fintechservice.dto.request.LikedRemoveRequest;
 import com.fastcampus.fintechservice.dto.request.LikedRequest;
 import com.fastcampus.fintechservice.dto.response.LikedResponse;
@@ -20,14 +19,12 @@ import com.fastcampus.fintechservice.dto.response.MessageResponse;
 import com.fastcampus.fintechservice.redis.RedisKey;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -57,6 +54,7 @@ public class LikedService {
                 likedRepository.save(liked);
 
                 return LikedResponse.from(
+                        liked.getId(),
                         deposit.getFinPrdtNm(),
                         redisTemplate.opsForValue().get(
                                 RedisKey.DEPOSIT_LIKED_KEY.getKey() + deposit.getDepositId()),
@@ -86,6 +84,7 @@ public class LikedService {
                 likedRepository.save(liked);
 
                 return LikedResponse.from(
+                        liked.getId(),
                         saving.getFinPrdtNm(),
                         redisTemplate.opsForValue().get(
                                 RedisKey.SAVING_LIKED_KEY.getKey() + saving.getSavingId()),

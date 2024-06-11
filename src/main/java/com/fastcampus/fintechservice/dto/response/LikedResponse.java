@@ -12,6 +12,7 @@ import java.util.List;
 @Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class LikedResponse {
+    private Long id;
     private String name;
     private String count;
     private FinProductType finProductType;
@@ -19,10 +20,12 @@ public class LikedResponse {
     private List<String> joinWayList;//가입방법
 
     public static LikedResponse from(
+            Long id,
             String name,
             String count,
             FinProductType type) {
         return LikedResponse.builder()
+                .id(id)
                 .name(name)
                 .count(count)
                 .finProductType(type)
