@@ -12,8 +12,8 @@ import com.fastcampus.fintechservice.db.finance.Deposit;
 import com.fastcampus.fintechservice.db.finance.DepositOption;
 import com.fastcampus.fintechservice.db.finance.Saving;
 import com.fastcampus.fintechservice.db.finance.SavingOption;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,7 +31,7 @@ public class FinanceDetailDto {
 	private String finPrdtNm;//금융상품명
 
 	private String korCoNm;//은행명
-	private String imageBase64;//은행이미지 인코딩 값
+	private String bankImageUrl;//은행이미지 url
 
 	private ArrayList<String> tagList = new ArrayList<String>();
 	private Double intrRateShow;//저축 금리[소수점2자리]
@@ -72,20 +72,12 @@ public class FinanceDetailDto {
 		}
 		tagList.removeIf(Objects::isNull);//null제거
 
-		// 은행 이미지 base64로 인코딩
-		String imageBase64 = "";
-		try {
-			imageBase64 = encodeBase64(deposit.getBank().getImageName());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
 		return new FinanceDetailDto(
 			deposit.getDepositId(),
 			"DEPOSIT",
 			deposit.getFinPrdtNm(),
 			deposit.getKorCoNm(),
-			imageBase64,
+			convertImageUrl(deposit.getBank().getImageName()),
 			tagList,
 			deposit.getIntrRateShow(),
 			deposit.getIntrRate2Show(),
@@ -139,7 +131,7 @@ public class FinanceDetailDto {
 			"SAVING",
 			saving.getFinPrdtNm(),
 			saving.getKorCoNm(),
-			imageBase64,
+			convertImageUrl(saving.getBank().getImageName()),
 			tagList,
 			saving.getIntrRateShow(),
 			saving.getIntrRate2Show(),
