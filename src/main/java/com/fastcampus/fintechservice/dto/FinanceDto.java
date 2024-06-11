@@ -2,7 +2,6 @@ package com.fastcampus.fintechservice.dto;
 
 import static com.fastcampus.fintechservice.common.ImageConverter.*;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,7 +25,7 @@ public class FinanceDto {
 	private String finPrdtNm;//금융상품명
 
 	private String korCoNm;//은행명
-	private String imageBase64;//은행이미지 인코딩 값
+	private String bankImageUrl;//은행이미지 url
 
 	private Double intrRateShow;//저축 금리[소수점2자리]
 	private Double intrRate2Show;//최고 우대금리[소수점 2자리]
@@ -45,20 +44,12 @@ public class FinanceDto {
 		Integer joinMin = Collections.min(saveList);
 		Integer joinMax = Collections.max(saveList);
 
-		// 은행 이미지 base64로 인코딩
-		String imageBase64 = "";
-		try {
-			imageBase64 = encodeBase64(deposit.getBank().getImageName());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
 		return new FinanceDto(
 			deposit.getDepositId(),
 			"DEPOSIT",
 			deposit.getFinPrdtNm(),
 			deposit.getKorCoNm(),
-			imageBase64,
+			convertImageUrl(deposit.getBank().getImageName()),
 			deposit.getIntrRateShow(),
 			deposit.getIntrRate2Show(),
 			joinMin,
@@ -77,20 +68,12 @@ public class FinanceDto {
 		Integer joinMin = Collections.min(saveList);
 		Integer joinMax = Collections.max(saveList);
 
-		// 은행 이미지 base64로 인코딩
-		String imageBase64 = "";
-		try {
-			imageBase64 = encodeBase64(saving.getBank().getImageName());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
 		return new FinanceDto(
 			saving.getSavingId(),
 			"SAVING",
 			saving.getFinPrdtNm(),
 			saving.getKorCoNm(),
-			imageBase64,
+			convertImageUrl(saving.getBank().getImageName()),
 			saving.getIntrRateShow(),
 			saving.getIntrRate2Show(),
 			joinMin,

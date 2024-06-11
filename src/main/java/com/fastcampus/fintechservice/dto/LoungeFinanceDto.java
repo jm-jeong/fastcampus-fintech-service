@@ -1,9 +1,9 @@
 package com.fastcampus.fintechservice.dto;
 
+import static com.fastcampus.fintechservice.common.ImageConverter.*;
+
 import java.io.IOException;
 
-
-import com.fastcampus.fintechservice.common.ImageConverter;
 import com.fastcampus.fintechservice.db.finance.Deposit;
 import com.fastcampus.fintechservice.db.finance.DepositOption;
 import com.fastcampus.fintechservice.db.finance.Saving;
@@ -22,7 +22,7 @@ public class LoungeFinanceDto {
 	private String finPrdtNm;//금융상품명
 
 	private String korCoNm;//은행명
-	private String imageBase64;//은행이미지 인코딩 값
+	private String bankImageUrl;//은행이미지 url
 
 	private Double intrRateShow;//저축 금리[소수점2자리]
 	private Double intrRate2Show;//최고 우대금리[소수점 2자리]
@@ -32,16 +32,16 @@ public class LoungeFinanceDto {
 
 	public static LoungeFinanceDto depositFrom(Deposit deposit) throws IOException {
 		Integer min = deposit.getDepositOptions().stream().mapToInt(
-                DepositOption::getSaveTrm).min().orElseThrow();
+			DepositOption::getSaveTrm).min().orElseThrow();
 		Integer max = deposit.getDepositOptions().stream().mapToInt(
-                DepositOption::getSaveTrm).max().orElseThrow();
+			DepositOption::getSaveTrm).max().orElseThrow();
 
 		return LoungeFinanceDto.builder()
 			.id(deposit.getDepositId())
 			.finProductType(FinProductType.DEPOSIT)
 			.finPrdtNm(deposit.getFinPrdtNm())
 			.korCoNm(deposit.getKorCoNm())
-			.imageBase64(ImageConverter.encodeBase64(deposit.getBank().getImageName()))
+			.bankImageUrl(convertImageUrl(deposit.getBank().getImageName()))
 			.intrRateShow(deposit.getIntrRateShow())
 			.intrRate2Show(deposit.getIntrRate2Show())
 			.joinMin(min)
@@ -51,17 +51,16 @@ public class LoungeFinanceDto {
 
 	public static LoungeFinanceDto savingFrom(Saving saving) throws IOException {
 		Integer min = saving.getSavingOptions().stream().mapToInt(
-                SavingOption::getSaveTrm).min().orElseThrow();
+			SavingOption::getSaveTrm).min().orElseThrow();
 		Integer max = saving.getSavingOptions().stream().mapToInt(
-                SavingOption::getSaveTrm).max().orElseThrow();
-
+			SavingOption::getSaveTrm).max().orElseThrow();
 
 		return LoungeFinanceDto.builder()
 			.id(saving.getSavingId())
 			.finProductType(FinProductType.SAVING)
 			.finPrdtNm(saving.getFinPrdtNm())
 			.korCoNm(saving.getKorCoNm())
-			.imageBase64(ImageConverter.encodeBase64(saving.getBank().getImageName()))
+			.bankImageUrl(convertImageUrl(saving.getBank().getImageName()))
 			.intrRateShow(saving.getIntrRateShow())
 			.intrRate2Show(saving.getIntrRate2Show())
 			.joinMin(min)
