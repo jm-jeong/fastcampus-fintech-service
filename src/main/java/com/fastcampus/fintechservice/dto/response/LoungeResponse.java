@@ -99,6 +99,8 @@ public class LoungeResponse {
                 .viewCount(lounge.getViewCount())
                 .updatedDate(lounge.getModifiedAt())
                 .finProductType(lounge.getFinProductType())
+                .finPrdtNm1(lounge.getFinancialProduct1Name())
+                .finPrdtNm2(lounge.getFinancialProduct2Name())
                 .build();
     }
 
