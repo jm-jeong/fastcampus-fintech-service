@@ -2,7 +2,6 @@ package com.fastcampus.fintechservice.dto;
 
 import static com.fastcampus.fintechservice.common.ImageConverter.*;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -117,14 +116,6 @@ public class FinanceDetailDto {
 			tagList.add(joinWay);
 		}
 		tagList.removeIf(Objects::isNull);//null제거
-
-		// 은행 이미지 base64로 인코딩
-		String imageBase64 = "";
-		try {
-			imageBase64 = encodeBase64(saving.getBank().getImageName());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
 
 		return new FinanceDetailDto(
 			saving.getSavingId(),
