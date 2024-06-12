@@ -18,12 +18,15 @@ public class FinanceListResponse {
 
 	private FinProductType finProductType;
 	private FinanceDetailDto financeDetailDto;
+	@Getter
+	private int likeCount;
 
 	public static FinanceListResponse fromDepositProductList(Deposit deposit) {
 
 		String[] joins = deposit.getJoinWay().split(",");
 		return FinanceListResponse.builder()
 			.finProductType(FinProductType.DEPOSIT)
+				.likeCount(deposit.getLikedCount())
 			.financeDetailDto(FinanceDetailDto.builder()
 				.financeId(deposit.getDepositId())
 				.finPrdtNm(deposit.getFinPrdtNm())
@@ -40,6 +43,7 @@ public class FinanceListResponse {
 		String[] joins = saving.getJoinWay().split(",");
 		return FinanceListResponse.builder()
 			.finProductType(FinProductType.SAVING)
+				.likeCount(saving.getLikedCount())
 			.financeDetailDto(FinanceDetailDto.builder()
 				.financeId(saving.getSavingId())
 				.finPrdtNm(saving.getFinPrdtNm())
@@ -50,5 +54,6 @@ public class FinanceListResponse {
 				.joinWayList(joins).build())
 			.build();
 	}
+
 
 }

@@ -15,6 +15,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -126,5 +128,43 @@ public class FinanceQueryRepository{
 
         return new PageImpl<>(responseDtoList, validPageable, totalCount);
     }
+
+
+    public Page<FinanceListResponse> findAllFinanceProducts(Pageable pageable) {
+        long depositTotalCount = jpaQueryFactory.selectFrom(deposit).stream().count();
+        long savingTotalCount = jpaQueryFactory.selectFrom(saving).stream().count();
+
+        long totalCount = depositTotalCount + savingTotalCount;
+        Pageable validPageable = PagingUtils.validPageable(pageable, (int) totalCount);
+
+        // 예금 상품 조회
+        List<Deposit> depositResult = jpaQueryFactory.selectFrom(deposit)
+                .orderBy(deposit.likedCount.desc())
+                .offset(validPageable.getOffset())
+                .limit(validPageable.getPageSize())
+                .fetch();
+
+        // 적금 상품 조회
+        List<Saving> savingResult = jpaQueryFactory.selectFrom(saving)
+                .orderBy(saving.likedCount.desc())
+                .offset(validPageable.getOffset())
+                .limit(validPageable.getPageSize())
+                .fetch();
+
+        // 예금 및 적금 상품 결과를 하나의 리스트로 통합
+        List<FinanceListResponse> responseDtoList = new ArrayList<>();
+        responseDtoList.addAll(depositResult.stream()
+                .map(FinanceListResponse::fromDepositProductList)
+                .toList());
+        responseDtoList.addAll(savingResult.stream()
+                .map(FinanceListResponse::fromSavingProductList)
+                .toList());
+
+        // 통합된 결과를 페이징 처리하여 반환
+        responseDtoList.sort(Comparator.comparing(FinanceListResponse::getLikeCount).reversed());
+        return new PageImpl<>(responseDtoList, validPageable, totalCount);
+
+    }
+
 
 }
