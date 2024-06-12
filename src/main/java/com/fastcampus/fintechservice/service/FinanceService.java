@@ -49,27 +49,27 @@ public class FinanceService {
 		List<FinanceShowDto> financeShowDtoList = new ArrayList<FinanceShowDto>();//함께보면 좋은 예금 상품 추천 리스트
 		if (financeType.equals("DEPOSIT")) {
 			financeDto = depositRepository.findById(financeId).map(FinanceDetailDto::fromDeposit)
-				.orElseThrow(() -> new ApiException(FinanceErrorCode.FINANCE_NOT_FOUND,
-					String.format("Deposit 찾을 수 없음 Id : %s", financeId)));
+					.orElseThrow(() -> new ApiException(FinanceErrorCode.FINANCE_NOT_FOUND,
+							String.format("Deposit 찾을 수 없음 Id : %s", financeId)));
 
 			financeDto.setLiked(likedRepository.existsByIdAndDepositId(currentUser.id(), financeId));
 
 			depositRepository.findTop5ByKorCoNm(financeDto.getKorCoNm()).stream()
-				.map(FinanceShowDto::fromDeposit)
-				.map(it -> it.setLiked(likedRepository.existsByIdAndDepositId(currentUser.id(), it.getFinanceId())))
-				.forEach(financeShowDtoList::add);
+					.map(FinanceShowDto::fromDeposit)
+					.map(it -> it.setLiked(likedRepository.existsByIdAndDepositId(currentUser.id(), it.getFinanceId())))
+					.forEach(financeShowDtoList::add);
 
 		} else if (financeType.equals("SAVING")) {
 			financeDto = savingRepository.findById(financeId).map(FinanceDetailDto::fromSaving)
-				.orElseThrow(() -> new ApiException(FinanceErrorCode.FINANCE_NOT_FOUND,
-					String.format("Saving 찾을 수 없음 Id : %s", financeId)));
+					.orElseThrow(() -> new ApiException(FinanceErrorCode.FINANCE_NOT_FOUND,
+							String.format("Saving 찾을 수 없음 Id : %s", financeId)));
 
 			financeDto.setLiked(likedRepository.existsByIdAndSavingId(currentUser.id(), financeId));
 
 			savingRepository.findTop5ByKorCoNm(financeDto.getKorCoNm()).stream()
-				.map(FinanceShowDto::fromSaving)
-				.map(it -> it.setLiked(likedRepository.existsByIdAndSavingId(currentUser.id(), it.getFinanceId())))
-				.forEach(financeShowDtoList::add);
+					.map(FinanceShowDto::fromSaving)
+					.map(it -> it.setLiked(likedRepository.existsByIdAndSavingId(currentUser.id(), it.getFinanceId())))
+					.forEach(financeShowDtoList::add);
 		}
 
 		return new FinanceDetailResponse(financeDto, financeShowDtoList);
@@ -82,15 +82,15 @@ public class FinanceService {
 		Page<FinanceListResponse> responsePage = null;
 		if(finProductType.equals(FinProductType.DEPOSIT)) {
 			responsePage = financeQueryRepository.findAllDeposit(pageable);
-			boolean isLiked = likeCheck(responsePage, userDto.toEntity());
-			if(isLiked) {
-				responsePage.getContent().forEach(it -> it.getFinanceDetailDto().setLiked(true));
+			for (FinanceListResponse response : responsePage.getContent()) {
+				boolean isLiked = likeCheck(response, userDto.toEntity(), FinProductType.DEPOSIT);
+				response.getFinanceDetailDto().setLiked(isLiked);
 			}
-		}else if(finProductType.equals(FinProductType.SAVING)) {
+		} else if(finProductType.equals(FinProductType.SAVING)) {
 			responsePage = financeQueryRepository.findAllSaving(pageable);
-			boolean isLiked = likeCheck(responsePage, userDto.toEntity());
-			if(isLiked) {
-				responsePage.getContent().forEach(it -> it.getFinanceDetailDto().setLiked(true));
+			for (FinanceListResponse response : responsePage.getContent()) {
+				boolean isLiked = likeCheck(response, userDto.toEntity(), FinProductType.SAVING);
+				response.getFinanceDetailDto().setLiked(isLiked);
 			}
 		}
 		if(responsePage.isEmpty()) {
@@ -99,35 +99,30 @@ public class FinanceService {
 		return responsePage;
 	}
 
-
-	public boolean likeCheck(Page<FinanceListResponse> listResponses, UserAccount user) {
-		boolean likedDeposit = false;
-		boolean likedSaving = false;
-		for (FinanceListResponse response : listResponses) {
-			likedDeposit =
-					likedRepository.existsByIdAndDepositId(user.getId(), response.getFinanceDetailDto().getFinanceId());
-			likedSaving =
-					likedRepository.existsByIdAndSavingId(user.getId(), response.getFinanceDetailDto().getFinanceId());
-			return likedDeposit || likedSaving;
+	public boolean likeCheck(FinanceListResponse response, UserAccount user, FinProductType finProductType) {
+		if (finProductType.equals(FinProductType.DEPOSIT)) {
+			return likedRepository.existsByIdAndDepositId(user.getId(), response.getFinanceDetailDto().getFinanceId());
+		} else {
+			return likedRepository.existsByIdAndSavingId(user.getId(), response.getFinanceDetailDto().getFinanceId());
 		}
-		return false;
 	}
+
 
 	//은행 선택 정렬
 	@Transactional
-	public Page<FinanceListResponse> getFinanceBankType(FinanceListRequest financeListRequest,UserDto userDto, Pageable pageable) {
+	public Page<FinanceListResponse> getFinanceBankType(FinanceListRequest financeListRequest, UserDto userDto, Pageable pageable) {
 		Page<FinanceListResponse> responsePage = null;
 		if(financeListRequest.getFinProductType().equals(FinProductType.DEPOSIT)) {
 			responsePage = financeQueryRepository.findAllDepositBankType(financeListRequest.getBankTypeList(), pageable);
-			boolean isLiked = likeCheck(responsePage, userDto.toEntity());
-			if(isLiked) {
-				responsePage.getContent().forEach(it -> it.getFinanceDetailDto().setLiked(true));
+			for (FinanceListResponse response : responsePage.getContent()) {
+				boolean isLiked = likeCheck(response, userDto.toEntity(), FinProductType.DEPOSIT);
+				response.getFinanceDetailDto().setLiked(isLiked);
 			}
-		}else if(financeListRequest.getFinProductType().equals(FinProductType.SAVING)) {
+		} else if(financeListRequest.getFinProductType().equals(FinProductType.SAVING)) {
 			responsePage = financeQueryRepository.findAllSavingBankType(financeListRequest.getBankTypeList(), pageable);
-			boolean isLiked = likeCheck(responsePage, userDto.toEntity());
-			if(isLiked) {
-				responsePage.getContent().forEach(it -> it.getFinanceDetailDto().setLiked(true));
+			for (FinanceListResponse response : responsePage.getContent()) {
+				boolean isLiked = likeCheck(response, userDto.toEntity(), FinProductType.SAVING);
+				response.getFinanceDetailDto().setLiked(isLiked);
 			}
 		}
 		if(responsePage.isEmpty()) {
@@ -136,22 +131,21 @@ public class FinanceService {
 		return responsePage;
 	}
 
-	//금융상품 검색
 	@Transactional
 	public Page<FinanceListResponse> searchFinancial(FinProductType finProductType, UserDto userDto,
 													 String keyword, Pageable pageable) {
 		Page<FinanceListResponse> financeListResponsePage = null;
 		if(finProductType.equals(FinProductType.DEPOSIT)) {
 			financeListResponsePage = financeSearchRepository.findAllDepositSearch(keyword, pageable);
-			boolean isLiked = likeCheck(financeListResponsePage, userDto.toEntity());
-			if(isLiked) {
-				financeListResponsePage.getContent().forEach(it -> it.getFinanceDetailDto().setLiked(true));
+			for (FinanceListResponse response : financeListResponsePage.getContent()) {
+				boolean isLiked = likeCheck(response, userDto.toEntity(), FinProductType.DEPOSIT);
+				response.getFinanceDetailDto().setLiked(isLiked);
 			}
-		}else if(finProductType.equals(FinProductType.SAVING)) {
+		} else if(finProductType.equals(FinProductType.SAVING)) {
 			financeListResponsePage = financeSearchRepository.findAllSavingSearch(keyword, pageable);
-			boolean isLiked = likeCheck(financeListResponsePage, userDto.toEntity());
-			if(isLiked) {
-				financeListResponsePage.getContent().forEach(it -> it.getFinanceDetailDto().setLiked(true));
+			for (FinanceListResponse response : financeListResponsePage.getContent()) {
+				boolean isLiked = likeCheck(response, userDto.toEntity(), FinProductType.SAVING);
+				response.getFinanceDetailDto().setLiked(isLiked);
 			}
 		}
 		if(financeListResponsePage.isEmpty()) {
