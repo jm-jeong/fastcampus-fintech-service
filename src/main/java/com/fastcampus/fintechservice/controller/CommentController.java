@@ -39,12 +39,11 @@ public class CommentController {
     }
 
     @PutMapping("/{commentId}")
-    public Api<CommentResponse> updateComment(@PathVariable Long commentId,
-                                              @RequestBody CommentEditRequest commentEditRequest,
+    public Api<CommentResponse> updateComment(@RequestBody CommentEditRequest commentEditRequest,
                                               Authentication authentication) {
 
         return Api.OK(commentService.updateComment(
-                commentId, commentEditRequest, userService.loadUserByEmail(authentication.getName())));
+                commentEditRequest, userService.loadUserByEmail(authentication.getName())));
     }
 
     @DeleteMapping("/{commentId}")

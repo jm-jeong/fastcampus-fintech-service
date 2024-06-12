@@ -1,6 +1,7 @@
 package com.fastcampus.fintechservice.service;
 
 import com.fastcampus.fintechservice.common.error.LoungeErrorCode;
+import com.fastcampus.fintechservice.common.error.UserErrorCode;
 import com.fastcampus.fintechservice.common.exception.ApiException;
 import com.fastcampus.fintechservice.db.finance.Deposit;
 import com.fastcampus.fintechservice.db.finance.DepositRepository;
@@ -9,6 +10,7 @@ import com.fastcampus.fintechservice.db.finance.SavingRepository;
 import com.fastcampus.fintechservice.db.finance.enums.FinProductType;
 import com.fastcampus.fintechservice.db.liked.Liked;
 import com.fastcampus.fintechservice.db.liked.LikedRepository;
+import com.fastcampus.fintechservice.db.lounge.Comment;
 import com.fastcampus.fintechservice.db.lounge.Lounge;
 import com.fastcampus.fintechservice.db.lounge.LoungeQueryRepositoryImpl;
 import com.fastcampus.fintechservice.db.lounge.LoungeRepository;
@@ -115,6 +117,7 @@ public class LoungeService {
 
         Lounge lounge = validatePost(postId);
         viewPost(lounge.getUser(), postId, lounge);
+
         return responseValidateFinProductType(lounge);
     }
 
@@ -154,6 +157,7 @@ public class LoungeService {
     @Transactional
     public LoungeResponse updatePost(Long postId, LoungeUpdateRequest loungeUpdateRequest) throws IOException {
         Lounge lounge = validatePost(postId);
+        validateUser(lounge, lounge.getUser());
         lounge.loungeUpdate(loungeUpdateRequest);
         return responseValidateFinProductType(lounge);
     }
@@ -165,6 +169,7 @@ public class LoungeService {
     @Transactional
     public MessageResponse deletePost(Long postId) {
         Lounge lounge = validatePost(postId);
+        validateUser(lounge, lounge.getUser());
         loungeRepository.delete(lounge);
         return new MessageResponse("삭제 완료");
     }
@@ -202,6 +207,12 @@ public class LoungeService {
             LoungeFinanceDto loungeFinanceDto2 =
                     LoungeFinanceDto.savingFrom(validateSaving(lounge.getFinancialProduct2()));
             return LoungeResponse.fromSaving(lounge, loungeFinanceDto1, loungeFinanceDto2);
+        }
+    }
+
+    private void validateUser(Lounge lounge, UserAccount user) {
+        if (!lounge.getUser().equals(user)) {
+            throw new ApiException(UserErrorCode.USER_NOT_FOUND, String.format("User not found. userId: %d", user.getId()));
         }
     }
 

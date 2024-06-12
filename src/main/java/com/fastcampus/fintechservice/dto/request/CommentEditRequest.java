@@ -8,6 +8,6 @@ import lombok.Getter;
 @Builder
 public class CommentEditRequest {
 
-    private Long id;
+    private Long commentId;
     private String content;
 }
