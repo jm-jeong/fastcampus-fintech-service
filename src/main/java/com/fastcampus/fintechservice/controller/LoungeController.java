@@ -3,6 +3,7 @@ package com.fastcampus.fintechservice.controller;
 import com.fastcampus.fintechservice.common.api.Api;
 import com.fastcampus.fintechservice.db.finance.enums.FinProductType;
 import com.fastcampus.fintechservice.dto.request.LoungeRequest;
+import com.fastcampus.fintechservice.dto.request.LoungeUpdateRequest;
 import com.fastcampus.fintechservice.dto.response.LoungeResponse;
 import com.fastcampus.fintechservice.dto.response.MessageResponse;
 import com.fastcampus.fintechservice.service.LoungeService;
@@ -65,8 +66,8 @@ public class LoungeController {
 
     // 게시글 업데이트
     @PutMapping("/{postId}")
-    public Api<LoungeResponse> updatePost(@PathVariable Long postId, @RequestBody LoungeRequest loungeRequest) throws IOException {
-        return Api.OK(loungeService.updatePost(postId, loungeRequest));
+    public Api<LoungeResponse> updatePost(@PathVariable Long postId, @RequestBody LoungeUpdateRequest loungeUpdateRequest) throws IOException {
+        return Api.OK(loungeService.updatePost(postId, loungeUpdateRequest));
     }
 
 

@@ -24,6 +24,9 @@ public class LoungeResponse {
     private String title;
     private String content;
     private String username;
+    private int vote1;
+    private int vote2;
+    private int participateCount;
     private int viewCount;
     private FinProductResponseDto finProductResponseDto;
     private LocalDateTime createdDate;
@@ -40,6 +43,9 @@ public class LoungeResponse {
                 .title(lounge.getTitle())
                 .username(lounge.getUser().getName())
                 .content(lounge.getContent())
+                .vote1(lounge.getVote1())
+                .vote2(lounge.getVote2())
+                .participateCount(lounge.getVote1() + lounge.getVote2())
                 .createdDate(lounge.getCreatedAt())
                 .finProductResponseDto(FinProductResponseDto.of(dto1, dto2))
                 .updatedDate(lounge.getModifiedAt())
@@ -52,6 +58,9 @@ public class LoungeResponse {
                 .id(lounge.getId())
                 .title(lounge.getTitle())
                 .content(lounge.getContent())
+                .vote1(lounge.getVote1())
+                .vote2(lounge.getVote2())
+                .participateCount(lounge.getVote1() + lounge.getVote2())
                 .username(lounge.getUser().getName())
                 .createdDate(lounge.getCreatedAt())
                 .finProductResponseDto(FinProductResponseDto.of(dto1, dto2))
@@ -65,6 +74,9 @@ public class LoungeResponse {
                 .id(lounge.getId())
                 .title(lounge.getTitle())
                 .username(lounge.getUser().getName())
+                .vote1(lounge.getVote1())
+                .vote2(lounge.getVote2())
+                .participateCount(lounge.getVote1() + lounge.getVote2())
                 .createdDate(lounge.getCreatedAt())
                 .viewCount(lounge.getViewCount())
                 .updatedDate(lounge.getModifiedAt())
@@ -80,10 +92,15 @@ public class LoungeResponse {
                 .title(lounge.getTitle())
                 .content(lounge.getContent())
                 .username(lounge.getUser().getName())
+                .vote1(lounge.getVote1())
+                .vote2(lounge.getVote2())
+                .participateCount(lounge.getVote1() + lounge.getVote2())
                 .createdDate(lounge.getCreatedAt())
                 .viewCount(lounge.getViewCount())
                 .updatedDate(lounge.getModifiedAt())
                 .finProductType(lounge.getFinProductType())
+                .finPrdtNm1(lounge.getFinancialProduct1Name())
+                .finPrdtNm2(lounge.getFinancialProduct2Name())
                 .build();
     }
 
