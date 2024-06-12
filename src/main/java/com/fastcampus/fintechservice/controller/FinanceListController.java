@@ -37,10 +37,5 @@ public class FinanceListController {
                 userService.loadUserByEmail(authentication.getName()),pageable));
     }
 
-    @GetMapping("/search")
-    public Api<Page<FinanceListResponse>> searchDeposit(FinProductType finProductType,
-                                                        Authentication authentication,String keyword, Pageable pageable) {
 
-        return Api.OK(financeService.searchFinancial(finProductType,userService.loadUserByEmail(authentication.getName()),keyword, pageable));
-    }
 }
