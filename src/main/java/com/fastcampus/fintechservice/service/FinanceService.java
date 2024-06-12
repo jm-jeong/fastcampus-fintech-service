@@ -131,26 +131,5 @@ public class FinanceService {
 		return responsePage;
 	}
 
-	@Transactional
-	public Page<FinanceListResponse> searchFinancial(FinProductType finProductType, UserDto userDto,
-													 String keyword, Pageable pageable) {
-		Page<FinanceListResponse> financeListResponsePage = null;
-		if(finProductType.equals(FinProductType.DEPOSIT)) {
-			financeListResponsePage = financeSearchRepository.findAllDepositSearch(keyword, pageable);
-			for (FinanceListResponse response : financeListResponsePage.getContent()) {
-				boolean isLiked = likeCheck(response, userDto.toEntity(), FinProductType.DEPOSIT);
-				response.getFinanceDetailDto().setLiked(isLiked);
-			}
-		} else if(finProductType.equals(FinProductType.SAVING)) {
-			financeListResponsePage = financeSearchRepository.findAllSavingSearch(keyword, pageable);
-			for (FinanceListResponse response : financeListResponsePage.getContent()) {
-				boolean isLiked = likeCheck(response, userDto.toEntity(), FinProductType.SAVING);
-				response.getFinanceDetailDto().setLiked(isLiked);
-			}
-		}
-		if(financeListResponsePage.isEmpty()) {
-			throw new ApiException(FinanceErrorCode.FINANCE_NOT_FOUND, "Deposit not found");
-		}
-		return financeListResponsePage;
-	}
+
 }

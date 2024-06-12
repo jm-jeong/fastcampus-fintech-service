@@ -4,6 +4,8 @@ import com.fastcampus.fintechservice.common.error.FinanceErrorCode;
 import com.fastcampus.fintechservice.common.exception.ApiException;
 import com.fastcampus.fintechservice.db.finance.FinanceQueryRepository;
 import com.fastcampus.fintechservice.db.finance.FinanceSearchRepository;
+import com.fastcampus.fintechservice.db.finance.enums.FinProductType;
+import com.fastcampus.fintechservice.dto.UserDto;
 import com.fastcampus.fintechservice.dto.response.FinanceListResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -32,12 +34,17 @@ public class HomeService {
 
 
     @Transactional
-    public Page<FinanceListResponse> getAllFinanceProductSearch(String keyword, Pageable pageable) {
-        Page<FinanceListResponse> result =
-                financeSearchRepository.searchAllFinanceProducts(keyword,pageable);
-        if(result.isEmpty()) {
-            throw new ApiException(FinanceErrorCode.FINANCE_NOT_FOUND);
+    public Page<FinanceListResponse> searchFinancial(FinProductType finProductType,String keyword,
+                                                     Pageable pageable) {
+        Page<FinanceListResponse> financeListResponsePage = null;
+        if(finProductType.equals(FinProductType.DEPOSIT)) {
+            financeListResponsePage = financeSearchRepository.findAllDepositSearch(keyword, pageable);
+        } else if(finProductType.equals(FinProductType.SAVING)) {
+            financeListResponsePage = financeSearchRepository.findAllSavingSearch(keyword, pageable);
         }
-        return result;
+        if(financeListResponsePage.isEmpty()) {
+            throw new ApiException(FinanceErrorCode.FINANCE_NOT_FOUND, String.format("keyword not found %s", keyword));
+        }
+        return financeListResponsePage;
     }
 }
