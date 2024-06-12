@@ -52,7 +52,7 @@ public class SecurityConfig {
 			.authorizeHttpRequests(authorize -> authorize
 				.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
 				.requestMatchers("/api/v1/users/**", "/api/v1/finances/**", "/api/v1/lounge", "/api/v1/lounge/search",
-					"/api/v1/lounge/all").permitAll()
+					"/api/v1/lounge/all", "/api/v1/home/**").permitAll()
 				.requestMatchers(PERMIT).permitAll()
 				.anyRequest().authenticated()
 
