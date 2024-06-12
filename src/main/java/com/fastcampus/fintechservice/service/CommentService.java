@@ -2,12 +2,14 @@ package com.fastcampus.fintechservice.service;
 
 
 import com.fastcampus.fintechservice.common.error.LoungeErrorCode;
+import com.fastcampus.fintechservice.common.error.UserErrorCode;
 import com.fastcampus.fintechservice.common.exception.ApiException;
 import com.fastcampus.fintechservice.db.lounge.Comment;
 import com.fastcampus.fintechservice.db.lounge.CommentRepository;
 import com.fastcampus.fintechservice.db.lounge.Lounge;
 import com.fastcampus.fintechservice.db.lounge.LoungeRepository;
 import com.fastcampus.fintechservice.db.user.UserAccount;
+import com.fastcampus.fintechservice.db.user.UserRepository;
 import com.fastcampus.fintechservice.dto.UserDto;
 import com.fastcampus.fintechservice.dto.request.CommentEditRequest;
 import com.fastcampus.fintechservice.dto.request.CommentRequest;
@@ -101,9 +103,9 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentResponse updateComment(Long commentId, CommentEditRequest request, UserDto userDto) {
+    public CommentResponse updateComment(CommentEditRequest request, UserDto userDto) {
         // comment validate
-        Comment comment = validateComment(commentId);
+        Comment comment = validateComment(request.getCommentId());
         // 게시글 유효성체크
         validatePost(comment.getLounge().getId());
 
@@ -124,9 +126,9 @@ public class CommentService {
         return new MessageResponse("Comment deleted successfully.");
     }
 
-    public void validateUser(Comment comment, UserAccount user) {
-        if (!comment.validateUser(user)) {
-            throw new ApiException(LoungeErrorCode.COMMENT_NOT_OWNER, String.format("Comment is not %s",user.getEmail()));
+    private void validateUser(Comment comment, UserAccount user) {
+        if (!comment.getUser().equals(user)) {
+        throw new ApiException(UserErrorCode.USER_NOT_FOUND, String.format("User not found. userId: %d", user.getId()));
         }
     }
 
