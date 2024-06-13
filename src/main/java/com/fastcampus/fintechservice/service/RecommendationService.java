@@ -57,7 +57,11 @@ public class RecommendationService {
 
 			// intrRateShow를 기준으로 내림차순으로 정렬
 			Collections.sort(allList, Comparator.comparing(RecommendationDto::getIntrRateShow).reversed());
-			List<RecommendationDto> allTopList = allList.subList(0, size);
+			List<RecommendationDto> allTopList = new ArrayList<>();
+			if (allList.size() < size) {
+				size = allList.size();
+			}
+			allTopList = allList.subList(0, size);
 			return new RecommendationResponse(allTopList, depositList,
 				savingList);
 		}
